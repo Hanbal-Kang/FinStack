@@ -255,7 +255,7 @@ void LoginWindow::applyStyles()
         border-radius: 4px;
     }
     QWidget#rightPanel {
-        background-color: #0f172a;
+        background-color: #2b395b;
     }
     QLabel#heading {
         color: #f1f5f9;

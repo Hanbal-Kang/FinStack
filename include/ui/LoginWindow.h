@@ -33,6 +33,10 @@ private:
     QLabel*     m_passwordLabel;
     QLineEdit*  m_passwordInput;
 
+    QPushButton* m_forgotPassword;
+    QPushButton* m_loginButton;
+    QPushButton* m_registerButton;
+
     //Error Message
     QLabel* m_errorLabel;
 

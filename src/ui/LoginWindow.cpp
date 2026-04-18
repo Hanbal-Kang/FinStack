@@ -18,7 +18,6 @@ LoginWindow::LoginWindow(QWidget* parent):QMainWindow(parent)
     setupUI();
     applyStyles();
 }
-
 void LoginWindow::setupUI()
 {
     QWidget* central = new QWidget(this);

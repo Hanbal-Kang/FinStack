@@ -1,0 +1,105 @@
+    QMainWindow {
+        background-color: #455373;
+    }
+    QWidget#leftPanel {
+        background-color: #111827;
+    }
+    QLabel#appName {
+        color: #f1f5f9;
+        font-size: 22px;
+        font-weight: 600;
+    }
+    QWidget#logoIcon {
+        background-color: #1e3a5f;
+        border-radius: 10px;
+    }
+    QLabel#tagline {
+        color: #f1f5f9;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    QLabel#dotActive {
+        background-color: #1d4ed8;
+        border-radius: 4px;
+    }
+    QLabel#dotInactive {
+        background-color: #1e293b;
+        border-radius: 4px;
+    }
+    QWidget#rightPanel {
+        background-color: #2b395b;
+    }
+    QLabel#heading {
+        color: #f1f5f9;
+        font-size: 26px;
+        font-weight: 600;
+    }
+    QLabel#subheading {
+        color: #64748b;
+        font-size: 13px;
+    }
+    QLabel#inputLabel {
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    QLabel#mutedText {
+        color: #64748b;
+        font-size: 13px;
+    }
+    QLineEdit#inputField {
+        background-color: #1e293b;
+        color: #f1f5f9;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 0px 14px;
+        font-size: 13px;
+    }
+    QLineEdit#inputField:focus {
+        border: 1px solid #3b82f6;
+        background-color: #1e3a5f;
+    }
+    QPushButton#primaryButton {
+        background-color: #1d4ed8;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    QPushButton#primaryButton:hover {
+        background-color: #2563eb;
+    }
+    QPushButton#primaryButton:pressed {
+        background-color: #1e40af;
+    }
+    QPushButton#linkButton {
+        background: transparent;
+        color: #3b82f6;
+        border: none;
+        font-size: 12px;
+        padding: 0;
+    }
+    QPushButton#linkButton:hover {
+        color: #60a5fa;
+    }
+    QFrame#divider {
+        border: none;
+        border-top: 1px solid #1e293b;
+    }
+    QLabel#errorLabel {
+        color: #ef4444;
+        font-size: 12px;
+    }
+    QLabel#barLight {
+    background-color: #93c5fd;
+    border-radius: 2px;
+    }
+    QLabel#barMid {
+    background-color: #3b82f6;
+    border-radius: 2px;
+    }
+    QLabel#barDark {
+    background-color: #1d4ed8;
+    border-radius: 2px;
+    }

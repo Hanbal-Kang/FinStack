@@ -24,8 +24,8 @@ private:
     QLabel* m_tagline;
 
     //Right Panel Elements
-    QLabel* m_heading
-    QLabel* m_subheading
+    QLabel* m_heading;
+    QLabel* m_subheading;
 
     QLabel*     m_usernameLabel;
     QLineEdit*  m_usernameInput;
@@ -45,5 +45,5 @@ private slots:
     void onLoginClicked();
     void onRegisterClicked();
     void onForgotPasswordClicked();
-    
+
 };

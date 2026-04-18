@@ -15,15 +15,15 @@ public:
     int get_id() const;
     QString get_username() const;
     QString get_password() const;
-    QString get_acc_creation_date() const;
+    QDateTime get_acc_creation_date() const;
 
     //Setters
     void set_id(int id);
     void set_username(const QString& username);
     void set_password(const QString& password);
-    void set_id(const QDateTime& date);
+    void set_acc_creation_date(const QDateTime& date);
 
-    //Validity if Account Already Exists
+    //Checking Edge Cases for our id and name
     bool isValid() const;
 
 };

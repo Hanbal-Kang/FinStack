@@ -45,21 +45,47 @@ void LoginWindow::setupUI()
 void LoginWindow::setupLeftPanel()
 {
     QVBoxLayout* layout = new QVBoxLayout(m_leftPanel);
-    layout->setContentsMargins(48, 48, 48, 48);
+    layout->setContentsMargins(40, 48, 40, 48);
     layout->setSpacing(0);
 
     QHBoxLayout* logoRow = new QHBoxLayout();
     logoRow->setSpacing(12);
 
-    m_logoIcon = new QLabel();
-    m_logoIcon->setFixedSize(44, 44);
-    m_logoIcon->setObjectName("logoIcon");
+    // Logo icon — stacked bars widget
+    QWidget* iconWidget = new QWidget();
+    iconWidget->setFixedSize(44, 44);
+    iconWidget->setObjectName("logoIcon");
 
-    m_appName = new QLabel("FinStack");
-    m_appName->setObjectName("appName");
+    QVBoxLayout* barsLayout = new QVBoxLayout(iconWidget);
+    barsLayout->setContentsMargins(10, 10, 10, 10);
+    barsLayout->setSpacing(4);
 
-    logoRow->addWidget(m_logoIcon);
-    logoRow->addWidget(m_appName);
+    QLabel* bar1 = new QLabel();
+    QLabel* bar2 = new QLabel();
+    QLabel* bar3 = new QLabel();
+
+    bar1->setMaximumWidth(14);
+    bar2->setMaximumWidth(20);
+    bar3->setMaximumWidth(26);
+
+    bar1->setFixedHeight(5);
+    bar2->setFixedHeight(5);
+    bar3->setFixedHeight(5);
+
+    bar1->setObjectName("barLight");
+    bar2->setObjectName("barMid");
+    bar3->setObjectName("barDark");
+
+    barsLayout->addStretch();
+    barsLayout->addWidget(bar1);
+    barsLayout->addWidget(bar2);
+    barsLayout->addWidget(bar3);
+
+m_appName = new QLabel("FinStack");
+m_appName->setObjectName("appName");
+
+logoRow->addWidget(iconWidget);
+logoRow->addWidget(m_appName);
     logoRow->addStretch();
 
     layout->addLayout(logoRow);
@@ -292,6 +318,18 @@ void LoginWindow::applyStyles()
     QLabel#errorLabel {
         color: #ef4444;
         font-size: 12px;
+    }
+    QLabel#barLight {
+    background-color: #93c5fd;
+    border-radius: 2px;
+    }
+    QLabel#barMid {
+    background-color: #3b82f6;
+    border-radius: 2px;
+    }
+    QLabel#barDark {
+    background-color: #1d4ed8;
+    border-radius: 2px;
     }
     )");
 }

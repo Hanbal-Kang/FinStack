@@ -227,7 +227,7 @@ void LoginWindow::applyStyles()
 {
     setStyleSheet(R"(
     QMainWindow {
-        background-color: #30416a;
+        background-color: #455373;
     }
     QWidget#leftPanel {
         background-color: #111827;

@@ -18,35 +18,69 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(PROJECT_SOURCES
     src/main.cpp
 
+    # UI layer
+    src/ui/BaseWindow.cpp
     src/ui/LoginWindow.cpp
     src/ui/RegisterWindow.cpp
     src/ui/DashboardWindow.cpp
+    src/ui/TransactionWindow.cpp
+    src/ui/AnalyticsWindow.cpp
+    src/ui/BudgetWindow.cpp
+    src/ui/SavingsGoalWindow.cpp
+    src/ui/ProfileWindow.cpp
 
+    # Services
+    src/services/BaseService.cpp
     src/services/AuthService.cpp
     src/services/TransactionService.cpp
+    src/services/BudgetService.cpp
+    src/services/AnalyticsService.cpp
+    src/services/ReportService.cpp
 
+    # Models
     src/models/User.cpp
     src/models/Transaction.cpp
+    src/models/Budget.cpp
+    src/models/SavingsGoal.cpp
+    src/models/RecurringTransaction.cpp
 
+    # Database
     src/database/DatabaseManager.cpp
 
+    # Utils
     src/utils/Validator.cpp
     src/utils/Formatter.cpp
+    src/utils/InsightEngine.cpp
 
+    # Headers
+    include/ui/BaseWindow.h
     include/ui/LoginWindow.h
     include/ui/RegisterWindow.h
     include/ui/DashboardWindow.h
+    include/ui/TransactionWindow.h
+    include/ui/AnalyticsWindow.h
+    include/ui/BudgetWindow.h
+    include/ui/SavingsGoalWindow.h
+    include/ui/ProfileWindow.h
 
+    include/services/BaseService.h
     include/services/AuthService.h
     include/services/TransactionService.h
+    include/services/BudgetService.h
+    include/services/AnalyticsService.h
+    include/services/ReportService.h
 
     include/models/User.h
     include/models/Transaction.h
+    include/models/Budget.h
+    include/models/SavingsGoal.h
+    include/models/RecurringTransaction.h
 
     include/database/DatabaseManager.h
 
     include/utils/Validator.h
     include/utils/Formatter.h
+    include/utils/InsightEngine.h
 
     resources/resources.qrc
 )

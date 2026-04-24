@@ -86,3 +86,18 @@ CMakeLists.txt.user*
 # Database — never commit user data
 *.db
 *.sqlite
+
+# Visual Studio cache/settings
+.vs/
+*.user
+*.suo
+
+# Build output
+Debug/
+Release/
+*.exe
+*.obj
+*.pdb
+
+# SQLite database file (runtime)
+*.db

@@ -4,7 +4,7 @@
 class Budget
 {
 private:
-    int id;
+    int Budget_id;
     int user_id;
 
     //Category for which we need to set a budget (e.g Food ,transport etc)

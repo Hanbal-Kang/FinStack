@@ -17,7 +17,7 @@ private:
     //Amount of the transaction
     double amount;
 
-    //Category of transaction
+    //Category of transaction   (e.g food,transport,entertainment)
     QString category;
 
     //Description of Transaction

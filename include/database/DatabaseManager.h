@@ -1,25 +1,25 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include <sqlite3.h>
-#include <string>
-using namespace std;
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QString>
+#include <QSqlError>
 
 class DatabaseManager {
 private:
-    sqlite3* db;
+    QSqlDatabase db;
 
-    DatabaseManager(); // private constructor (singleton)
+    DatabaseManager();
 
 public:
     static DatabaseManager& instance();
 
-    bool open(const string& dbPath);
-    bool execute(const string& query);
-    sqlite3_stmt* prepare(const string& query);
+    bool open(const QString& dbPath);
+    bool execute(const QString& query);
+    QSqlQuery prepare(const QString& query);
     void close();
 
-    // prevent copying
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
 };

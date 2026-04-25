@@ -29,6 +29,7 @@ public:
     int get_user_id() const;
     double get_amount() const;
     QString get_category() const;
+    QString get_description() const;
     QString get_interval () const;
     QDateTime get_next_due() const;
 

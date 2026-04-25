@@ -5,6 +5,8 @@ RecurringTransaction::RecurringTransaction()
     reccur_transac_id = 0;
     user_id = 0;
 
+    amount = 0.0;
+
     category = "";
     description = "";
     interval = "";

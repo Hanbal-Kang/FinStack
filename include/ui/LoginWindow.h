@@ -1,5 +1,5 @@
 #pragma once
-#include <QMainWindow>
+#include "ui/BaseWindow.h"
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QFrame>
 
-class LoginWindow : public QMainWindow
+class LoginWindow : public BaseWindow
 {
     Q_OBJECT
 public:
@@ -40,10 +40,10 @@ private:
     //Error Message
     QLabel* m_errorLabel;
 
-    void setupUI();
+    void setupUI() override;
     void setupLeftPanel();
     void setupRightPanel();
-    void applyStyles();
+    void applyStyles() override;
 
 private slots:
     void onLoginClicked();

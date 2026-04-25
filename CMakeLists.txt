@@ -30,7 +30,7 @@ set(PROJECT_SOURCES
     src/ui/ProfileWindow.cpp
 
     # Services
-    src/services/BaseService.cpp
+
     src/services/AuthService.cpp
     src/services/TransactionService.cpp
     src/services/BudgetService.cpp

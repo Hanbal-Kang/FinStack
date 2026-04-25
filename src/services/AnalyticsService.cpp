@@ -12,9 +12,12 @@ double AnalyticsService::getTotalIncome(int userId) {
         );
 
     q.addBindValue(userId);
-    q.exec();
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next())
+        return 0.0;
 
-    return q.next() ? q.value(0).toDouble() : 0.0;
+     // null safety
+    QVariant val = q.value(0);
+    return val.isNull() ? 0.0 : val.toDouble();
 }
 
 double AnalyticsService::getTotalExpense(int userId) {
@@ -25,9 +28,13 @@ double AnalyticsService::getTotalExpense(int userId) {
         );
 
     q.addBindValue(userId);
-    q.exec();
 
-    return q.next() ? q.value(0).toDouble() : 0.0;
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next())
+        return 0.0;
+
+     // null safety
+    QVariant val = q.value(0);
+    return val.isNull() ? 0.0 : val.toDouble();
 }
 
 double AnalyticsService::getBalance(int userId) {
@@ -43,7 +50,10 @@ double AnalyticsService::getCategoryExpense(int userId, int categoryId) {
 
     q.addBindValue(categoryId);
     q.addBindValue(userId);
-    q.exec();
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next())
+        return 0.0;
 
-    return q.next() ? q.value(0).toDouble() : 0.0;
+    // null safety
+    QVariant val = q.value(0);
+    return val.isNull() ? 0.0 : val.toDouble();
 }

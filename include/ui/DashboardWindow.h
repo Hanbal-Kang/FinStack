@@ -55,27 +55,24 @@ private:
     void buildTransactionsList(QWidget* parent);
     void buildBudgetPanel(QWidget* parent);
 
-    QFrame*      makeQuickActionBtn(const QString& icon,
-                               const QString& label,
-                               const QString& accentColor,
-                               const char*    signal);
-    QWidget*     makeTransactionRow(const Transaction& tx);
-    QWidget*     makeBudgetBar(const QString& category,
-                           double spent, double limit);
+    QFrame*  makeQuickActionBtn(const QString& icon, const QString& label, const QString& accentColor, const char*    signal);
+    QWidget* makeTransactionRow(const Transaction& tx);
+    QWidget* makeBudgetBar(const QString& category, double spent, double limit);
 
-    void     loadData();
-    double   totalBalance()  const;
-    double   monthlyIncome() const;
-    double   monthlyExpenses() const;
+    void   loadData();
+    double totalBalance()    const;
+    double monthlyIncome()   const;
+    double monthlyExpenses() const;
 
-    User                 m_user;
-    QList<Transaction>   m_transactions;
-    QList<Budget>        m_budgets;
+    User               m_user;
+    QList<Transaction> m_transactions;
+    QList<Budget>      m_budgets;
 
-    QLabel*      m_balanceLabel    = nullptr;
-    QLabel*      m_incomeLabel     = nullptr;
-    QLabel*      m_expenseLabel    = nullptr;
-    QVBoxLayout* m_txLayout        = nullptr;
-    QVBoxLayout* m_budgetLayout    = nullptr;
-    QLabel*      m_avatarLabel     = nullptr;
+    QLabel*      m_balanceLabel  = nullptr;
+    QLabel*      m_incomeLabel   = nullptr;
+    QLabel*      m_expenseLabel  = nullptr;
+    QVBoxLayout* m_txLayout      = nullptr;
+    QVBoxLayout* m_budgetLayout  = nullptr;
+    QLabel*      m_avatarLabel   = nullptr;
+    QLabel*      m_appName       = nullptr;
 };

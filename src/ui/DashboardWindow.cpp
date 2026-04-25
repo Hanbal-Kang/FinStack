@@ -8,7 +8,9 @@
 #include <QStyle>
 #include <utility>
 
-DashboardWindow::DashboardWindow(const User& user, QWidget* parent) : BaseWindow(parent), m_user(user)
+//  Constructor
+DashboardWindow::DashboardWindow(const User& user, QWidget* parent)
+    : BaseWindow(parent), m_user(user)
 {
     setWindowTitle("FinStack — Dashboard");
     setupWindowGeometry(1100, 700);
@@ -44,9 +46,7 @@ void DashboardWindow::setupUI()
     pageLayout->setSpacing(14);
 
     buildHeroCard(pageLayout);
-
     buildQuickActions(pageLayout);
-
     buildBottomRow(pageLayout);
 
     pageLayout->addStretch();
@@ -57,182 +57,6 @@ void DashboardWindow::setupUI()
 void DashboardWindow::applyStyles()
 {
     loadGlobalStylesheet();
-
-    QString extra = R"(
-        QFrame#navbar {
-            background-color: #0d1117;
-            border-bottom: 1px solid #21262d;
-        }
-        QLabel#navTitle {
-            color: #e6edf3;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        QPushButton#navIconBtn {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 8px;
-            color: #8b949e;
-            font-size: 14px;
-            padding: 6px 10px;
-        }
-        QPushButton#navIconBtn:hover { background-color: #21262d; }
-
-        QLabel#avatarLabel {
-            background-color: #7c8cf8;
-            color: #ffffff;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 600;
-            qproperty-alignment: AlignCenter;
-        }
-        QWidget#pageBody {
-            background-color: #0d1117;
-        }
-        QScrollArea#pageScroll {
-            background-color: #0d1117;
-            border: none;
-        }
-
-        /* Hero card */
-        QFrame#heroCard {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 16px;
-        }
-        QLabel#heroTitle {
-            color: #8b949e;
-            font-size: 11px;
-            letter-spacing: 2px;
-            background: transparent;
-        }
-        QLabel#heroAmount {
-            color: #ffffff;
-            font-size: 40px;
-            font-weight: 700;
-            background: transparent;
-        }
-        QLabel#heroTrend {
-            background-color: #1a3a2a;
-            color: #3fb950;
-            border-radius: 10px;
-            padding: 3px 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Summary cards */
-        QFrame#incomeCard {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-left: 4px solid #3fb950;
-            border-radius: 12px;
-        }
-        QFrame#expenseCard {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-left: 4px solid #f85149;
-            border-radius: 12px;
-        }
-        QLabel#cardTitle {
-            color: #8b949e;
-            font-size: 12px;
-            background: transparent;
-        }
-        QLabel#cardValue {
-            color: #e6edf3;
-            font-size: 18px;
-            font-weight: 700;
-            background: transparent;
-        }
-        QLabel#cardDot_income  { background-color: #3fb950; border-radius: 4px; }
-        QLabel#cardDot_expense { background-color: #f85149; border-radius: 4px; }
-
-        /* Quick-action buttons */
-        QFrame#quickBtn {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 12px;
-        }
-        QFrame#quickBtn:hover {
-            background-color: #1c2128;
-            border-color: #30363d;
-        }
-        QLabel#quickIcon { background: transparent; font-size: 22px; }
-        QLabel#quickLabel {
-            color: #e6edf3;
-            font-size: 12px;
-            font-weight: 600;
-            background: transparent;
-        }
-
-        /* Section labels */
-        QLabel#sectionLabel {
-            color: #e6edf3;
-            font-size: 14px;
-            font-weight: 600;
-            background: transparent;
-        }
-        QPushButton#viewAllBtn {
-            background: transparent;
-            border: none;
-            color: #388bfd;
-            font-size: 12px;
-        }
-        QPushButton#viewAllBtn:hover { color: #58a6ff; }
-
-        /* Transaction rows */
-        QFrame#txRow {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 10px;
-        }
-        QFrame#txRow:hover {
-            background-color: #1c2128;
-            border-color: #30363d;
-        }
-        QLabel#txIcon    { border-radius: 15px; font-size: 14px; font-weight: 700; background: transparent; }
-        QLabel#txDesc    { color: #e6edf3; font-size: 13px; font-weight: 600; background: transparent; }
-        QLabel#txMeta    { color: #8b949e; font-size: 11px; background: transparent; }
-        QLabel#txAmtPos  { color: #3fb950; font-size: 13px; font-weight: 600; background: transparent; }
-        QLabel#txAmtNeg  { color: #f85149; font-size: 13px; font-weight: 600; background: transparent; }
-        QLabel#txIconDep { background-color: #1a3a2a; color: #3fb950; border-radius: 15px; }
-        QLabel#txIconExp { background-color: #3a1515; color: #f85149; border-radius: 15px; }
-
-        QLabel#emptyLabel {
-            color: #8b949e;
-            font-size: 13px;
-            background: transparent;
-        }
-
-        /* Budget panel */
-        QFrame#budgetPanel {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 12px;
-        }
-        QLabel#budgetCat { color: #e6edf3; font-size: 12px; background: transparent; }
-        QLabel#budgetPct { color: #388bfd; font-size: 12px; font-weight: 600; background: transparent; }
-        QProgressBar#budgetBar {
-            background-color: #21262d;
-            border: none;
-            border-radius: 3px;
-            max-height: 6px;
-            text-visible: false;
-        }
-        QProgressBar#budgetBar::chunk { border-radius: 3px; background-color: #388bfd; }
-        QProgressBar#budgetBar[pct="warning"]::chunk { background-color: #f0883e; }
-        QProgressBar#budgetBar[pct="danger"]::chunk  { background-color: #f85149; }
-
-        /* Transactions container */
-        QFrame#txPanel {
-            background-color: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 12px;
-        }
-    )";
-
-    setStyleSheet(styleSheet() + extra);
 }
 
 void DashboardWindow::refreshDashboard()
@@ -273,7 +97,7 @@ void DashboardWindow::refreshDashboard()
         for (const auto& tx : std::as_const(m_transactions)) {
             if (tx.get_type() == Transaction::Expense)
                 spent[tx.get_category()] += tx.get_amount();
-        }
+
         int row = 0;
         for (const auto& b : std::as_const(m_budgets)) {
             // CHANGE: convert enum to QString before using as map key and passing to makeBudgetBar
@@ -303,18 +127,34 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     backBtn->setCursor(Qt::PointingHandCursor);
     layout->addWidget(backBtn);
 
-    layout->addStretch();
+    QHBoxLayout* logoRow = new QHBoxLayout();
+    logoRow->setSpacing(12);
+    logoRow->setAlignment(Qt::AlignCenter);
 
-    QLabel* icon = new QLabel("≡", parent);
-    icon->setObjectName("navIconBtn");
-    icon->setAlignment(Qt::AlignCenter);
+    QWidget* iconWidget = new QWidget();
+    iconWidget->setFixedSize(44, 44);
+    iconWidget->setObjectName("logoIcon");
 
-    QLabel* title = new QLabel("FinStack", parent);
-    title->setObjectName("navTitle");
+    QVBoxLayout* barsLayout = new QVBoxLayout(iconWidget);
+    barsLayout->setContentsMargins(10, 10, 10, 10);
+    barsLayout->setSpacing(4);
 
-    layout->addWidget(icon);
-    layout->addWidget(title);
-    layout->addStretch();
+    QLabel* bar1 = new QLabel(); bar1->setObjectName("barLight"); bar1->setMaximumWidth(14); bar1->setFixedHeight(5);
+    QLabel* bar2 = new QLabel(); bar2->setObjectName("barMid");   bar2->setMaximumWidth(20); bar2->setFixedHeight(5);
+    QLabel* bar3 = new QLabel(); bar3->setObjectName("barDark");  bar3->setMaximumWidth(26); bar3->setFixedHeight(5);
+
+    barsLayout->addStretch();
+    barsLayout->addWidget(bar1);
+    barsLayout->addWidget(bar2);
+    barsLayout->addWidget(bar3);
+
+    m_appName = new QLabel("FinStack");
+    m_appName->setObjectName("appName");
+
+    logoRow->addWidget(iconWidget);
+    logoRow->addWidget(m_appName);
+
+    layout->addLayout(logoRow);
 
     QString initials = m_user.get_username().isEmpty()
                            ? "?"
@@ -324,12 +164,9 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     m_avatarLabel->setFixedSize(36, 36);
     m_avatarLabel->setAlignment(Qt::AlignCenter);
     m_avatarLabel->setCursor(Qt::PointingHandCursor);
-    connect(m_avatarLabel, &QLabel::linkActivated,
-            this, &DashboardWindow::onProfileClicked);
     layout->addWidget(m_avatarLabel);
 
-    connect(backBtn, &QPushButton::clicked,
-            this, &DashboardWindow::logoutRequested);
+    connect(backBtn, &QPushButton::clicked, this, &DashboardWindow::logoutRequested);
 }
 
 void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
@@ -364,20 +201,12 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     incCard->setObjectName("incomeCard");
     QVBoxLayout* incLayout = new QVBoxLayout(incCard);
     incLayout->setContentsMargins(16, 12, 16, 12);
-
     QHBoxLayout* incHeader = new QHBoxLayout();
-    QLabel* incDot = new QLabel(incCard);
-    incDot->setObjectName("cardDot_income");
-    incDot->setFixedSize(8, 8);
-    QLabel* incTitle = new QLabel("Total Income", incCard);
-    incTitle->setObjectName("cardTitle");
-    incHeader->addWidget(incDot);
-    incHeader->addWidget(incTitle);
-    incHeader->addStretch();
-
+    QLabel* incDot = new QLabel(incCard); incDot->setObjectName("cardDot_income"); incDot->setFixedSize(8, 8);
+    QLabel* incTitle = new QLabel("Total Income", incCard); incTitle->setObjectName("cardTitle");
+    incHeader->addWidget(incDot); incHeader->addWidget(incTitle); incHeader->addStretch();
     m_incomeLabel = new QLabel(QString("$%1").arg(monthlyIncome(), 0, 'f', 2), incCard);
     m_incomeLabel->setObjectName("cardValue");
-
     incLayout->addLayout(incHeader);
     incLayout->addWidget(m_incomeLabel);
 
@@ -385,20 +214,12 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     expCard->setObjectName("expenseCard");
     QVBoxLayout* expLayout = new QVBoxLayout(expCard);
     expLayout->setContentsMargins(16, 12, 16, 12);
-
     QHBoxLayout* expHeader = new QHBoxLayout();
-    QLabel* expDot = new QLabel(expCard);
-    expDot->setObjectName("cardDot_expense");
-    expDot->setFixedSize(8, 8);
-    QLabel* expTitle = new QLabel("Total Expenses", expCard);
-    expTitle->setObjectName("cardTitle");
-    expHeader->addWidget(expDot);
-    expHeader->addWidget(expTitle);
-    expHeader->addStretch();
-
+    QLabel* expDot = new QLabel(expCard); expDot->setObjectName("cardDot_expense"); expDot->setFixedSize(8, 8);
+    QLabel* expTitle = new QLabel("Total Expenses", expCard); expTitle->setObjectName("cardTitle");
+    expHeader->addWidget(expDot); expHeader->addWidget(expTitle); expHeader->addStretch();
     m_expenseLabel = new QLabel(QString("$%1").arg(monthlyExpenses(), 0, 'f', 2), expCard);
     m_expenseLabel->setObjectName("cardValue");
-
     expLayout->addLayout(expHeader);
     expLayout->addWidget(m_expenseLabel);
 
@@ -406,10 +227,8 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     netCard->setObjectName("incomeCard");
     QVBoxLayout* netLayout = new QVBoxLayout(netCard);
     netLayout->setContentsMargins(16, 12, 16, 12);
-    QLabel* netTitle = new QLabel("Net Balance", netCard);
-    netTitle->setObjectName("cardTitle");
-    double net = monthlyIncome() - monthlyExpenses();
-    QLabel* netValue = new QLabel(QString("$%1").arg(net, 0, 'f', 2), netCard);
+    QLabel* netTitle = new QLabel("Net Balance", netCard); netTitle->setObjectName("cardTitle");
+    QLabel* netValue = new QLabel(QString("$%1").arg(monthlyIncome() - monthlyExpenses(), 0, 'f', 2), netCard);
     netValue->setObjectName("cardValue");
     netLayout->addWidget(netTitle);
     netLayout->addWidget(netValue);
@@ -431,13 +250,13 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
     QHBoxLayout* row = new QHBoxLayout();
     row->setSpacing(12);
 
-    struct BtnDef { QString icon; QString label; QString color; const char* sig; };
+    struct BtnDef { QString icon; QString label; QString color; };
     QList<BtnDef> defs = {
-                          { "↓", "Withdraw",  "#f85149", SIGNAL(navigateToWithdraw()) },
-                          { "↑", "Deposit",   "#3fb950", SIGNAL(navigateToDeposit())  },
-                          { "◎", "Budget",    "#f0883e", SIGNAL(navigateToBudget())   },
-                          { "∿", "Analytics", "#7c8cf8", SIGNAL(navigateToAnalytics())},
-                          { "☰", "History",   "#58a6ff", SIGNAL(navigateToHistory())  },
+                          { "↓", "Withdraw",  "#f85149" },
+                          { "↑", "Deposit",   "#3fb950" },
+                          { "◎", "Budget",    "#f0883e" },
+                          { "∿", "Analytics", "#7c8cf8" },
+                          { "☰", "History",   "#58a6ff" },
                           };
 
     for (const auto& d : defs) {
@@ -588,8 +407,8 @@ QWidget* DashboardWindow::makeTransactionRow(const Transaction& tx)
     layout->setContentsMargins(12, 0, 12, 0);
     layout->setSpacing(10);
 
-    // Icon circle
     bool isIncome = (tx.get_type() == Transaction::Income);
+
     QLabel* icon = new QLabel(isIncome ? "↑" : "↓", row);
     icon->setObjectName(isIncome ? "txIconDep" : "txIconExp");
     icon->setFixedSize(30, 30);
@@ -598,21 +417,17 @@ QWidget* DashboardWindow::makeTransactionRow(const Transaction& tx)
     QVBoxLayout* textCol = new QVBoxLayout();
     textCol->setSpacing(2);
 
-    QString desc = tx.get_description().isEmpty()
-                       ? tx.get_category()
-                       : tx.get_description();
+    QString desc = tx.get_description().isEmpty() ? tx.get_category() : tx.get_description();
     QLabel* descLbl = new QLabel(desc, row);
     descLbl->setObjectName("txDesc");
 
     QLabel* metaLbl = new QLabel(
-        tx.get_category() + "  ·  " +
-            tx.get_transac_date().toString("MMM d, yyyy"), row);
+        tx.get_category() + "  ·  " + tx.get_transac_date().toString("MMM d, yyyy"), row);
     metaLbl->setObjectName("txMeta");
 
     textCol->addWidget(descLbl);
     textCol->addWidget(metaLbl);
 
-    // Amount
     QString sign = isIncome ? "+" : "-";
     QLabel* amtLbl = new QLabel(
         QString("%1$%2").arg(sign).arg(tx.get_amount(), 0, 'f', 2), row);
@@ -626,8 +441,7 @@ QWidget* DashboardWindow::makeTransactionRow(const Transaction& tx)
     return row;
 }
 
-QWidget* DashboardWindow::makeBudgetBar(const QString& category,
-                                        double spent, double limit)
+QWidget* DashboardWindow::makeBudgetBar(const QString& category, double spent, double limit)
 {
     QWidget* w = new QWidget();
     QVBoxLayout* vl = new QVBoxLayout(w);
@@ -635,18 +449,11 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category,
     vl->setSpacing(4);
 
     QHBoxLayout* header = new QHBoxLayout();
-    QLabel* catLbl = new QLabel(category, w);
-    catLbl->setObjectName("budgetCat");
-
+    QLabel* catLbl = new QLabel(category, w); catLbl->setObjectName("budgetCat");
     int pct = (limit > 0) ? qMin((int)((spent / limit) * 100), 100) : 0;
-    QLabel* pctLbl = new QLabel(QString("%1%").arg(pct), w);
-    pctLbl->setObjectName("budgetPct");
+    QLabel* pctLbl = new QLabel(QString("%1%").arg(pct), w); pctLbl->setObjectName("budgetPct");
+    header->addWidget(catLbl); header->addStretch(); header->addWidget(pctLbl);
 
-    header->addWidget(catLbl);
-    header->addStretch();
-    header->addWidget(pctLbl);
-
-    // Progress bar
     QProgressBar* bar = new QProgressBar(w);
     bar->setObjectName("budgetBar");
     bar->setRange(0, 100);
@@ -654,10 +461,8 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category,
     bar->setTextVisible(false);
     bar->setFixedHeight(6);
 
-    if (pct >= 100)
-        bar->setProperty("pct", "danger");
-    else if (pct >= 75)
-        bar->setProperty("pct", "warning");
+    if      (pct >= 100) bar->setProperty("pct", "danger");
+    else if (pct >= 75)  bar->setProperty("pct", "warning");
     bar->style()->unpolish(bar);
     bar->style()->polish(bar);
 
@@ -667,47 +472,34 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category,
 }
 
 // =============================================================================
-//  Data loading
-//  ─ When we implement TransactionService / BudgetService,
-//    replace the stub bodies below with real service calls.
+//  Data
 // =============================================================================
 void DashboardWindow::loadData()
 {
-    // ── STUB: remove this block and uncomment the service calls below ─────────
-    // For now, we seed two sample transactions so the UI is not empty
     if (m_transactions.isEmpty()) {
         Transaction t1;
-        t1.set_type(Transaction::Income);
-        t1.set_amount(5000.00);
-        t1.set_category("Other");
-        t1.set_description("Monthly Stipend");
+        t1.set_type(Transaction::Income);  t1.set_amount(5000.00);
+        t1.set_category("Other");          t1.set_description("Monthly Stipend");
         t1.set_transac_date(QDateTime::currentDateTime().addDays(-1));
         m_transactions.append(t1);
 
         Transaction t2;
-        t2.set_type(Transaction::Expense);
-        t2.set_amount(450.00);
-        t2.set_category("Food");
-        t2.set_description("Grocery Shopping");
+        t2.set_type(Transaction::Expense); t2.set_amount(450.00);
+        t2.set_category("Food");           t2.set_description("Grocery Shopping");
         t2.set_transac_date(QDateTime::currentDateTime().addDays(-2));
         m_transactions.append(t2);
 
         Transaction t3;
-        t3.set_type(Transaction::Expense);
-        t3.set_amount(120.00);
-        t3.set_category("Transport");
-        t3.set_description("Uber Ride");
+        t3.set_type(Transaction::Expense); t3.set_amount(120.00);
+        t3.set_category("Transport");      t3.set_description("Uber Ride");
         t3.set_transac_date(QDateTime::currentDateTime().addDays(-3));
         m_transactions.append(t3);
     }
 
-    // ── REAL implementation (uncomment when TransactionService is ready) ──────
-    // TransactionService txSvc;
-    // txSvc.initialize();
+    // Uncomment when we implement the service layer:
+    // TransactionService txSvc; txSvc.initialize();
     // m_transactions = txSvc.getTransactions(m_user.get_id());
-    //
-    // BudgetService budSvc;
-    // budSvc.initialize();
+    // BudgetService budSvc; budSvc.initialize();
     // m_budgets = budSvc.getBudgets(m_user.get_id());
 }
 
@@ -721,8 +513,7 @@ double DashboardWindow::totalBalance() const
 
 double DashboardWindow::monthlyIncome() const
 {
-    int m = QDate::currentDate().month();
-    int y = QDate::currentDate().year();
+    int m = QDate::currentDate().month(), y = QDate::currentDate().year();
     double total = 0.0;
     for (const auto& tx : m_transactions)
         if (tx.get_type() == Transaction::Income &&
@@ -734,8 +525,7 @@ double DashboardWindow::monthlyIncome() const
 
 double DashboardWindow::monthlyExpenses() const
 {
-    int m = QDate::currentDate().month();
-    int y = QDate::currentDate().year();
+    int m = QDate::currentDate().month(), y = QDate::currentDate().year();
     double total = 0.0;
     for (const auto& tx : m_transactions)
         if (tx.get_type() == Transaction::Expense &&

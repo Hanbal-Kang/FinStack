@@ -1,5 +1,5 @@
-#include "services\AuthService.h"
-#include "database\DatabaseManager.h"
+#include "services/AuthService.h"
+#include "database/DatabaseManager.h"
 
 #include <QSqlQuery>
 #include <QVariant>

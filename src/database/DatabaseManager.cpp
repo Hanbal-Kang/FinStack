@@ -50,6 +50,16 @@ QSqlQuery DatabaseManager::prepare(const QString& queryStr) {
     return query;
 }
 
+//execute prepared
+bool DatabaseManager::executePrepared(QSqlQuery& query) {   // ADDED
+    if (!query.exec()) {
+        qDebug() << "SQL Error:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+
 // Close database
 void DatabaseManager::close() {
     if (db.isOpen()) {

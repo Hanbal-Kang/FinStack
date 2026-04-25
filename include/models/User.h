@@ -6,7 +6,7 @@ class User
 private:
     int id;
     QString username;
-    QString password;
+    QString passwordHash;
     QDateTime acc_creation_date;
 public:
     User();
@@ -14,13 +14,13 @@ public:
     //Getters
     int get_id() const;
     QString get_username() const;
-    QString get_password() const;
+    QString get_passwordHash() const;
     QDateTime get_acc_creation_date() const;
 
     //Setters
     void set_id(int id);
     void set_username(const QString& username);
-    void set_password(const QString& password);
+    void set_passwordHash(const QString& passwordHash);
     void set_acc_creation_date(const QDateTime& date);
 
     //Checking Edge Cases for our id and name

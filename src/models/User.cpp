@@ -14,9 +14,8 @@ QString User::get_username() const
 {
     return username;
 }
-QString User::get_password() const
-{
-    return password;
+QString User::get_passwordHash() const {
+    return passwordHash;
 }
 QDateTime User::get_acc_creation_date() const
 {
@@ -32,9 +31,8 @@ void User::set_username(const QString& username)
 {
     this->username = username;
 }
-void User::set_password(const QString& password)
-{
-    this->password = password;
+void User::set_passwordHash(const QString& passwordHash) {
+    this->passwordHash = passwordHash;
 }
 
 void User::set_acc_creation_date(const QDateTime& date)

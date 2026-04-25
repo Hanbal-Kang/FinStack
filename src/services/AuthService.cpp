@@ -24,7 +24,7 @@ bool AuthService::registerUser(const QString& username,
     q.addBindValue(hashPassword(password));
     q.addBindValue(email);
 
-    return q.exec();
+     return DatabaseManager::instance().executePrepared(q);
 }
 
 bool AuthService::login(const QString& username,
@@ -35,7 +35,7 @@ bool AuthService::login(const QString& username,
 
     q.addBindValue(username);
 
-    if (!q.exec() || !q.next())
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next())
         return false;
 
     QString storedHash = q.value(0).toString();

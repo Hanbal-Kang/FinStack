@@ -18,6 +18,8 @@ public:
     bool open(const QString& dbPath);
     bool execute(const QString& query);
     QSqlQuery prepare(const QString& query);
+    bool executePrepared(QSqlQuery& query);
+
     void close();
 
     DatabaseManager(const DatabaseManager&) = delete;

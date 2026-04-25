@@ -267,3 +267,156 @@ QProgressBar#budgetBar {
 QProgressBar#budgetBar::chunk                  { border-radius: 3px; background-color: #388bfd; }
 QProgressBar#budgetBar[pct="warning"]::chunk   { background-color: #f0883e; }
 QProgressBar#budgetBar[pct="danger"]::chunk    { background-color: #f85149; }
+
+/* ================================================================
+BudgetWindow styles
+================================================================ */
+
+QLabel#pageTitle {
+    color: #e6edf3;
+    font-size: 26px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#pageSubtitle {
+    color: #8b949e;
+    font-size: 13px;
+    background: transparent;
+}
+QLabel#budgetTitleIcon {
+    background-color: #1e2a4a;
+    border-radius: 12px;
+    font-size: 24px;
+}
+
+/* Summary card */
+QFrame#budgetSummaryCard {
+    background-color: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 14px;
+}
+QLabel#summaryColTitle {
+    color: #8b949e;
+    font-size: 13px;
+    background: transparent;
+}
+QLabel#summaryValueNeutral {
+    color: #e6edf3;
+    font-size: 28px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#summaryValueDanger {
+    color: #f85149;
+    font-size: 28px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#summaryValueSuccess {
+    color: #3fb950;
+    font-size: 28px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#overallPctLabel {
+    color: #8b949e;
+    font-size: 12px;
+    background: transparent;
+}
+
+/* Category cards */
+QFrame#budgetCategoryCard {
+    background-color: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 14px;
+}
+QLabel#categoryEmoji {
+    background-color: #21262d;
+    border-radius: 8px;
+    font-size: 18px;
+}
+QLabel#budgetCatName {
+    color: #e6edf3;
+    font-size: 16px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#budgetCatSub {
+    color: #8b949e;
+    font-size: 11px;
+    background: transparent;
+}
+QLabel#budgetLimit {
+    color: #e6edf3;
+    font-size: 24px;
+    font-weight: 700;
+    background: transparent;
+}
+QLabel#budgetSpentLeft {
+    color: #8b949e;
+    font-size: 12px;
+    background: transparent;
+}
+QLabel#budgetPctRight {
+    color: #8b949e;
+    font-size: 11px;
+    background: transparent;
+}
+
+/* Status badges */
+QLabel#badgeOnTrack {
+    background-color: #1a3a2a;
+    color: #3fb950;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+QLabel#badgeWarning {
+    background-color: #3a2a10;
+    color: #f0883e;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+QLabel#badgeOverBudget {
+    background-color: #3a1515;
+    color: #f85149;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Edit button */
+QPushButton#editBudgetBtn {
+    background-color: #21262d;
+    border: none;
+    border-radius: 8px;
+    color: #8b949e;
+    font-size: 16px;
+}
+QPushButton#editBudgetBtn:hover {
+    background-color: #30363d;
+    color: #e6edf3;
+}
+
+/* Save button */
+QPushButton#saveBudgetBtn {
+    background-color: #238636;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 12px;
+}
+QPushButton#saveBudgetBtn:hover { background-color: #2ea043; }
+
+/* Inline edit input */
+QLineEdit#budgetInput {
+    background-color: #21262d;
+    border: 1px solid #388bfd;
+    border-radius: 6px;
+    color: #e6edf3;
+    font-size: 13px;
+    padding: 4px 8px;
+}

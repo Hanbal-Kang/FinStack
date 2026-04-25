@@ -4,7 +4,7 @@
 #include <QSizePolicy>
 #include <QSpacerItem>
 
-LoginWindow::LoginWindow(QWidget* parent):QMainWindow(parent)
+LoginWindow::LoginWindow(QWidget* parent):BaseWindow(parent)
 {
     setWindowTitle("FinStack");
     setMinimumSize(900,600);
@@ -15,7 +15,7 @@ LoginWindow::LoginWindow(QWidget* parent):QMainWindow(parent)
     int y = (screenRect.height() - 680)  / 2;
     setGeometry(x, y, 1100, 680);
 
-    setupUI();
+    initialize();
 }
 void LoginWindow::setupUI()
 {
@@ -38,6 +38,11 @@ void LoginWindow::setupUI()
 
     setupLeftPanel();
     setupRightPanel();
+}
+
+void LoginWindow::applyStyles()
+{
+    loadGlobalStylesheet();
 }
 
 void LoginWindow::setupLeftPanel()

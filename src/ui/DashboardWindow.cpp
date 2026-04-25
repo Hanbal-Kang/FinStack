@@ -6,6 +6,7 @@
 #include <QSpacerItem>
 #include <QDate>
 #include <QStyle>
+#include <utility>
 
 DashboardWindow::DashboardWindow(const User& user, QWidget* parent) : BaseWindow(parent), m_user(user)
 {
@@ -269,14 +270,16 @@ void DashboardWindow::refreshDashboard()
             delete item;
         }
         QMap<QString, double> spent;
-        for (const auto& tx : m_transactions) {
+        for (const auto& tx : std::as_const(m_transactions)) {
             if (tx.get_type() == Transaction::Expense)
                 spent[tx.get_category()] += tx.get_amount();
         }
         int row = 0;
-        for (const auto& b : m_budgets) {
-            double s = spent.value(b.get_category(), 0.0);
-            m_budgetLayout->insertWidget(row++, makeBudgetBar(b.get_category(), s, b.get_monthly_limit()));
+        for (const auto& b : std::as_const(m_budgets)) {
+            // CHANGE: convert enum to QString before using as map key and passing to makeBudgetBar
+            QString catName = Budget::categoryToString(b.get_category());
+            double s = spent.value(catName, 0.0);
+            m_budgetLayout->insertWidget(row++, makeBudgetBar(catName, s, b.get_monthly_limit()));
         }
     }
 }
@@ -545,8 +548,9 @@ void DashboardWindow::buildBottomRow(QVBoxLayout* layout)
     m_budgetLayout->setContentsMargins(0, 0, 0, 0);
     m_budgetLayout->setSpacing(12);
 
+    // CHANGE: spent map key is now QString (category name) to match transaction's get_category()
     QMap<QString, double> spent;
-    for (const auto& tx : m_transactions)
+    for (const auto& tx : std::as_const(m_transactions))
         if (tx.get_type() == Transaction::Expense)
             spent[tx.get_category()] += tx.get_amount();
 
@@ -555,11 +559,16 @@ void DashboardWindow::buildBottomRow(QVBoxLayout* layout)
         for (const auto& cat : placeholders)
             m_budgetLayout->addWidget(makeBudgetBar(cat, spent.value(cat, 0.0), 0.0));
     } else {
-        for (const auto& b : m_budgets)
-            m_budgetLayout->addWidget(makeBudgetBar(b.get_category(),
-                                                    spent.value(b.get_category(), 0.0),
+        for (const auto& b : std::as_const(m_budgets)) {
+            // CHANGE: convert Budget::Category enum to QString using the new helper
+            QString catName = Budget::categoryToString(b.get_category());
+            m_budgetLayout->addWidget(makeBudgetBar(catName,
+                                                    spent.value(catName, 0.0),
                                                     b.get_monthly_limit()));
+        }
     }
+
+
     m_budgetLayout->addStretch();
     budOuter->addWidget(barsWidget, 1);
 

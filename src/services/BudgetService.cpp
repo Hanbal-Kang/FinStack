@@ -11,10 +11,10 @@ bool BudgetService::createBudget(const Budget& budget) {
         );
 
     q.addBindValue(budget.get_user_id());
-    q.addBindValue(budget.get_category()); // should ideally be category_id
+    q.addBindValue(static_cast<int>(budget.get_category()));// should ideally be category_id
     q.addBindValue(budget.get_monthly_limit());
 
-    return q.exec();
+    return DatabaseManager::instance().executePrepared(q);
 }
 
 std::vector<Budget> BudgetService::getUserBudgets(int userId) {
@@ -25,13 +25,14 @@ std::vector<Budget> BudgetService::getUserBudgets(int userId) {
         );
 
     q.addBindValue(userId);
-    q.exec();
+    if (!DatabaseManager::instance().executePrepared(q))
+        return list;
 
     while (q.next()) {
         Budget b;
         b.set_id(q.value(0).toInt());
         b.set_user_id(q.value(1).toInt());
-        b.set_category(QString::number(q.value(2).toInt()));
+           b.set_category(static_cast<Budget::Category>(q.value(2).toInt()));
         b.set_monthly_limit(q.value(3).toDouble());
 
         list.push_back(b);
@@ -48,7 +49,7 @@ bool BudgetService::updateBudget(int id, double newLimit) {
     q.addBindValue(newLimit);
     q.addBindValue(id);
 
-    return q.exec();
+     return DatabaseManager::instance().executePrepared(q);
 }
 
 bool BudgetService::deleteBudget(int id) {
@@ -58,5 +59,5 @@ bool BudgetService::deleteBudget(int id) {
 
     q.addBindValue(id);
 
-    return q.exec();
+     return DatabaseManager::instance().executePrepared(q);
 }

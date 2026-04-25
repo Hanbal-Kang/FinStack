@@ -5,8 +5,8 @@ Budget::Budget()
     Budget_id = 0;
     user_id =0;
 
-    //Keeping empty by default
-    category = "";
+   // CHANGE : default enum value
+    category = Budget::Food;
 
     monthly_limit = 0.0;
 }
@@ -23,7 +23,8 @@ int Budget::get_user_id() const
     return this->user_id;
 }
 
-QString Budget::get_category() const
+// CHANGE: enum return type
+Budget::Category Budget::get_category() const
 {
     return this->category;
 }
@@ -45,7 +46,7 @@ void Budget::set_user_id(int id)
     this->user_id = id;
 }
 
-void Budget::set_category(const QString& category)
+void Budget::set_category(Category category)
 {
     this->category = category;
 }
@@ -58,5 +59,5 @@ void Budget::set_monthly_limit(double amount)
 //Validty
 bool Budget::isValid() const
 {
-    return (this->Budget_id > 0 && monthly_limit > 0.0);
+    return (this->Budget_id > 0 && user_id >0  && monthly_limit > 0.0);
 }

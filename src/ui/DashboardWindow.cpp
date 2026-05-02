@@ -97,7 +97,7 @@ void DashboardWindow::refreshDashboard()
         for (const auto& tx : std::as_const(m_transactions)) {
             if (tx.get_type() == Transaction::Expense)
                 spent[tx.get_category()] += tx.get_amount();
-
+            }
         int row = 0;
         for (const auto& b : std::as_const(m_budgets)) {
             // CHANGE: convert enum to QString before using as map key and passing to makeBudgetBar

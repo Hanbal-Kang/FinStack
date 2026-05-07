@@ -3,6 +3,7 @@
 #include <QScreen>
 #include <QSizePolicy>
 #include <QSpacerItem>
+#include <ui/DashboardWindow.h>
 
 LoginWindow::LoginWindow(QWidget* parent):BaseWindow(parent)
 {
@@ -239,6 +240,14 @@ void LoginWindow::onLoginClicked()
     }
 
     m_errorLabel->hide();
+
+    // Tester Just to test the functionality of Dashboard (Hardcoded)
+    User testUser;
+    testUser.set_username(username);
+
+    DashboardWindow* dashboard = new DashboardWindow(testUser, nullptr);
+    dashboard->show();
+    this->close();
 }
 
 void LoginWindow::onRegisterClicked()

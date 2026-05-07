@@ -21,4 +21,6 @@ protected:
     virtual void applyStyles() = 0;
     void loadGlobalStylesheet();
     void setupWindowGeometry(int width = 1100, int height = 680);
+
+    void setupLogo();
 };

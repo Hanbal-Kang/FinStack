@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFile>
 #include "ui/LoginWindow.h"
+#include <database/DatabaseManager.h>
 
 int main(int argc, char *argv[])
 {

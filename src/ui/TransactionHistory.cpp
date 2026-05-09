@@ -157,7 +157,7 @@ void TransactionHistoryWindow::setActiveFilter(const QString& filter)
 {
     m_activeFilter = filter;
 
-    // Repolish buttons for CSS active state updates
+    //Repolish buttons for CSS active state updates
     auto repolish = [](QWidget* w) {
         w->style()->unpolish(w);
         w->style()->polish(w);

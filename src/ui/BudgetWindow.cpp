@@ -1,4 +1,5 @@
 #include "ui/BudgetWindow.h"
+#include "ui/DashboardWindow.h"
 #include <QScrollArea>
 #include <QSizePolicy>
 #include <QDate>
@@ -87,8 +88,14 @@ void BudgetWindow::refreshBudgets()
         m_gridLayout->addWidget(card, i / 2, i % 2);
     }
 }
-
-void BudgetWindow::onBackClicked() { emit navigateBack(); }
+//CHANGE : HANBAL
+void BudgetWindow::onBackClicked()
+{
+    // Reopen Dashboard with the same User, then close this window.
+    DashboardWindow* dashboard = new DashboardWindow(m_user, nullptr);
+    dashboard->show();
+    this->close();
+}
 
 void BudgetWindow::onEditClicked(int index)
 {

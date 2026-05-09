@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
     src/ui/BudgetWindow.cpp
     src/ui/SavingsGoalWindow.cpp
     src/ui/ProfileWindow.cpp
+    src/ui/DepositWindow.cpp
+    src/ui/WithdrawWindow.cpp
 
     # Services
 

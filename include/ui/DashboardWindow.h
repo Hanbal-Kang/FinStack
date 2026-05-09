@@ -73,6 +73,5 @@ private:
     QLabel*      m_expenseLabel  = nullptr;
     QVBoxLayout* m_txLayout      = nullptr;
     QVBoxLayout* m_budgetLayout  = nullptr;
-    QLabel*      m_avatarLabel   = nullptr;
     QLabel*      m_appName       = nullptr;
 };

@@ -177,12 +177,15 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     QString initials = m_user.get_username().isEmpty()
                            ? "?"
                            : m_user.get_username().left(2).toUpper();
-    m_avatarLabel = new QLabel(initials, parent);
-    m_avatarLabel->setObjectName("avatarLabel");
-    m_avatarLabel->setFixedSize(36, 36);
-    m_avatarLabel->setAlignment(Qt::AlignCenter);
-    m_avatarLabel->setCursor(Qt::PointingHandCursor);
-    layout->addWidget(m_avatarLabel);
+    //changes: making the profile icon a button to go to profile window
+    QPushButton* avatarBtn = new QPushButton(initials, parent);
+    avatarBtn->setObjectName("avatarLabel");
+    avatarBtn->setFixedSize(36, 36);
+    avatarBtn->setCursor(Qt::PointingHandCursor);
+    avatarBtn->setFlat(true);
+    layout->addWidget(avatarBtn);
+
+    connect(avatarBtn, &QPushButton::clicked, this, &DashboardWindow::onProfileClicked);
 
     connect(backBtn, &QPushButton::clicked, this, &DashboardWindow::logoutRequested);
 }

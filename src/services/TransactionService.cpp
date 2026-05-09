@@ -10,7 +10,7 @@ bool TransactionService::addTransaction(const Transaction& t) {
         "INSERT INTO transactions(account_id, type, amount, category, description, transaction_date) "
         "VALUES (?, ?, ?, ?, ?, ?)"
         );
-    q.addBindValue(t.get_user_id());
+    q.addBindValue(t.get_account_id());
     q.addBindValue(t.get_type() == Transaction::Income ? "income" : "expense");
     q.addBindValue(t.get_amount());
     q.addBindValue(t.get_category()); // already QString, no change
@@ -32,7 +32,7 @@ std::vector<Transaction> TransactionService::getAllByUser(int userId) {
     while (q.next()) {
         Transaction t;
         t.set_transaction_id(q.value(0).toInt());
-        t.set_user_id(q.value(1).toInt());
+        t.set_account_id(q.value(1).toInt());
         t.set_type(q.value(2).toString() == "income" ? Transaction::Income : Transaction::Expense);
         t.set_amount(q.value(3).toDouble());
         t.set_category(q.value(4).toString());
@@ -61,7 +61,7 @@ std::vector<Transaction> TransactionService::getByType(int userId, Transaction::
     while (q.next()) {
         Transaction t;
         t.set_transaction_id(q.value(0).toInt());
-        t.set_user_id(q.value(1).toInt());
+        t.set_account_id(q.value(1).toInt());
         t.set_category(q.value(2).toString());
         t.set_type(type);
         t.set_amount(q.value(4).toDouble());

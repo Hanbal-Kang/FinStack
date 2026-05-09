@@ -128,6 +128,9 @@ void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
 void DashboardWindow::onProfileClicked()
 {
 
+    ProfileWindow* profile = new ProfileWindow(m_user, nullptr);
+    profile->show();
+    this->close();
 }
 
 void DashboardWindow::buildNavbar(QWidget* parent)

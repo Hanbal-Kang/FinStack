@@ -2,6 +2,8 @@
 #include "ui/DepositWindow.h"
 #include "ui/WithdrawWindow.h"
 #include "ui/ProfileWindow.h"
+#include "services/TransactionService.h"
+#include "services/BudgetService.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -497,31 +499,16 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category, double spent, d
 // =============================================================================
 void DashboardWindow::loadData()
 {
-    if (m_transactions.isEmpty()) {
-        Transaction t1;
-        t1.set_type(Transaction::Income);  t1.set_amount(5000.00);
-        t1.set_category("Other");          t1.set_description("Monthly Stipend");
-        t1.set_transac_date(QDateTime::currentDateTime().addDays(-1));
-        m_transactions.append(t1);
+    // Pull this user's transactions and budgets from the DB via the service layer.
+    // The services return std::vector — QList's range constructor wraps the
+    // begin/end iterators, so we get a clean QList<T> without copying twice.
+    TransactionService txSvc;
+    std::vector<Transaction> txs = txSvc.getAllByUser(m_user.get_id());
+    m_transactions = QList<Transaction>(txs.begin(), txs.end());
 
-        Transaction t2;
-        t2.set_type(Transaction::Expense); t2.set_amount(450.00);
-        t2.set_category("Food");           t2.set_description("Grocery Shopping");
-        t2.set_transac_date(QDateTime::currentDateTime().addDays(-2));
-        m_transactions.append(t2);
-
-        Transaction t3;
-        t3.set_type(Transaction::Expense); t3.set_amount(120.00);
-        t3.set_category("Transport");      t3.set_description("Uber Ride");
-        t3.set_transac_date(QDateTime::currentDateTime().addDays(-3));
-        m_transactions.append(t3);
-    }
-
-    // Uncomment when we implement the service layer:
-    // TransactionService txSvc; txSvc.initialize();
-    // m_transactions = txSvc.getTransactions(m_user.get_id());
-    // BudgetService budSvc; budSvc.initialize();
-    // m_budgets = budSvc.getBudgets(m_user.get_id());
+    BudgetService budSvc;
+    std::vector<Budget> bgs = budSvc.getUserBudgets(m_user.get_id());
+    m_budgets = QList<Budget>(bgs.begin(), bgs.end());
 }
 
 double DashboardWindow::totalBalance() const

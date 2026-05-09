@@ -60,11 +60,11 @@ void TransactionWindow::setupUI()
     closeBtn->setObjectName("txCloseBtn");
     closeBtn->setFixedSize(28, 28);
     closeBtn->setCursor(Qt::PointingHandCursor);
-    connect(closeBtn, &QPushButton::clicked, this , TransactionWindow::onCancelClicked());
+    connect(closeBtn, &QPushButton::clicked, this , &TransactionWindow::onCancelClicked);
 
-    //Adding widgets to header row
+    //Adding to header row
     headerRow->addWidget(iconLabel);
-    headerRow->addWidget(titleCol);
+    headerRow->addLayout(titleCol);
     headerRow->addStretch();
     headerRow->addWidget(closeBtn);
 
@@ -98,7 +98,7 @@ void TransactionWindow::setupUI()
     amountRow->addWidget(m_amountInput);
 
     root->addWidget(amountLabel);
-    root->addWidget(amountRow);
+    root->addLayout(amountRow);
 
 
     //Category

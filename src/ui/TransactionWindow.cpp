@@ -19,6 +19,8 @@ void TransactionWindow::setupUI()
     QWidget* central = new QWidget(this);
     //puts the widget in the centre of screen
     setCentralWidget(central);
+    central->setObjectName("txCentralWidget");
+    setObjectName("TransactionWindow");
 
     //vertical layout box
     QVBoxLayout* root = new QVBoxLayout(central);

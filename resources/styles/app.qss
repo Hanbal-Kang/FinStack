@@ -423,6 +423,9 @@ QLineEdit#budgetInput {
 
 /* ── Transaction Window ── */
 
+QMainWindow#TransactionWindow {
+    background-color: #0d1117;
+}
 QWidget#txCentralWidget {
     background-color: #131920;
     border-radius: 12px;

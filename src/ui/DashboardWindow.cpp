@@ -2,6 +2,7 @@
 #include "ui/DepositWindow.h"
 #include "ui/WithdrawWindow.h"
 #include "ui/ProfileWindow.h"
+#include "ui/BudgetWindow.h"
 #include "services/TransactionService.h"
 #include "services/BudgetService.h"
 
@@ -143,7 +144,14 @@ void DashboardWindow::onDepositClicked()
     w->show();
 }
 
-void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
+//Change: Added the connection from dashboard to Budget window
+void DashboardWindow::onBudgetClicked()
+{
+    BudgetWindow* budget = new BudgetWindow(m_user, nullptr);
+    budget->show();
+    this->close();
+}
+
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
 void DashboardWindow::onProfileClicked()

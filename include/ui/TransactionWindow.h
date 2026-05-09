@@ -26,6 +26,9 @@ signals:
     void transaction_confirmed(const Transaction& t);
     void cancelled();
 
+    //navigate back when "X" on top right is clicked
+    void navigateBack();
+
 protected:
     void setupUI() override;
     void applyStyles() override;
@@ -37,11 +40,15 @@ protected:
     virtual QString iconSymbol() const  = 0;
     virtual QString confirmBtnText() const  = 0;
 
+    virtual QString iconColor()      const = 0;  //green for deposit | red for withdraw
+    virtual Transaction::Type transactionType() const = 0;  //Income or Expense
+
 
     //Shared widgets; Accessible by child classes
     QLineEdit* m_amountInput = nullptr;
     QComboBox* m_categoryCombo = nullptr;   //list of categories to choose
     QDateEdit* m_dateEdit = nullptr;
+    QTextEdit* m_descripInput = nullptr;
     QLabel* errorLabel = nullptr;
     QPushButton* confirm_Button = nullptr;
 

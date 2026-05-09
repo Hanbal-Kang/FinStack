@@ -1,4 +1,6 @@
 #include "ui/DashboardWindow.h"
+#include "ui/DepositWindow.h"
+#include "ui/WithdrawWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -108,8 +110,17 @@ void DashboardWindow::refreshDashboard()
     }
 }
 
-void DashboardWindow::onWithdrawClicked()  { emit navigateToWithdraw(); }
-void DashboardWindow::onDepositClicked()   { emit navigateToDeposit(); }
+void DashboardWindow::onWithdrawClicked()
+{
+    WithdrawWindow* w = new WithdrawWindow(m_user, this);
+    w->show();
+}
+void DashboardWindow::onDepositClicked()
+{
+    DepositWindow* w = new DepositWindow (m_user , this);
+    w->show();
+}
+
 void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
@@ -286,7 +297,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         QPushButton* clickArea = new QPushButton(btn);
         clickArea->setFlat(true);
         clickArea->setStyleSheet("background:transparent;border:none;");
-        clickArea->setGeometry(0, 0, 1, 1);
+        clickArea->setGeometry(0, 0, 300, 100);
         clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);

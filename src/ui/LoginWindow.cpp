@@ -1,4 +1,5 @@
 #include "ui/LoginWindow.h"
+#include "ui/RegisterWindow.h"
 #include <QApplication>
 #include <QScreen>
 #include <QSizePolicy>
@@ -252,7 +253,11 @@ void LoginWindow::onLoginClicked()
 
 void LoginWindow::onRegisterClicked()
 {
-    // TODO: open RegisterWindow
+    connect(m_registerButton, &QPushButton::clicked, this, [this]() {
+        RegisterWindow* reg = new RegisterWindow(nullptr);
+        reg->show();
+        this->close();
+    });
 }
 
 void LoginWindow::onForgotPasswordClicked()

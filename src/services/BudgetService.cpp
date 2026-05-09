@@ -7,37 +7,30 @@
 
 bool BudgetService::createBudget(const Budget& budget) {
     QSqlQuery q = DatabaseManager::instance().prepare(
-        "INSERT INTO budgets(user_id, category_id, monthly_limit) VALUES (?, ?, ?)"
+        "INSERT INTO budgets(user_id, category, monthly_limit) VALUES (?, ?, ?)"
         );
-
     q.addBindValue(budget.get_user_id());
-    q.addBindValue(static_cast<int>(budget.get_category()));// should ideally be category_id
+    q.addBindValue(Budget::categoryToString(budget.get_category())); // enum → string
     q.addBindValue(budget.get_monthly_limit());
-
     return DatabaseManager::instance().executePrepared(q);
 }
 
 std::vector<Budget> BudgetService::getUserBudgets(int userId) {
     std::vector<Budget> list;
-
     QSqlQuery q = DatabaseManager::instance().prepare(
-        "SELECT id, user_id, category_id, monthly_limit FROM budgets WHERE user_id = ?"
+        "SELECT id, user_id, category, monthly_limit FROM budgets WHERE user_id = ?"
         );
-
     q.addBindValue(userId);
-    if (!DatabaseManager::instance().executePrepared(q))
-        return list;
+    if (!DatabaseManager::instance().executePrepared(q)) return list;
 
     while (q.next()) {
         Budget b;
         b.set_id(q.value(0).toInt());
         b.set_user_id(q.value(1).toInt());
-           b.set_category(static_cast<Budget::Category>(q.value(2).toInt()));
+        b.set_category(Budget::categoryFromString(q.value(2).toString())); // string → enum
         b.set_monthly_limit(q.value(3).toDouble());
-
         list.push_back(b);
     }
-
     return list;
 }
 

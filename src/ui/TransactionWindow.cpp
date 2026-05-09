@@ -1,6 +1,8 @@
 #include "ui/TransactionWindow.h"
 #include "utils/Validator.h"
 #include "models/Transaction.h"
+#include "database/DatabaseManager.h"
+#include <QSqlQuery>
 #include <QApplication>
 #include <QScreen>
 #include <QHBoxLayout>
@@ -202,7 +204,23 @@ void TransactionWindow::onConfirmClicked()
     errorLabel->hide();
 
     Transaction t;
-    t.set_user_id(m_user.get_id());
+    // Find this user's account_id (transactions reference accounts, not users directly).
+    // For now every user has exactly one "Main" account created at registration.
+    QSqlQuery accQ = DatabaseManager::instance().prepare(
+        "SELECT id FROM accounts WHERE user_id = ? LIMIT 1"
+        );
+    accQ.addBindValue(m_user.get_id());
+    int accountId = 0;
+    if (DatabaseManager::instance().executePrepared(accQ) && accQ.next())
+        accountId = accQ.value(0).toInt();
+
+    if (accountId == 0) {
+        errorLabel->setText("No account found for this user");
+        errorLabel->show();
+        return;
+    }
+
+    t.set_account_id(accountId);
     t.set_type(transactionType());
     t.set_amount(m_amountInput->text().toDouble());
     t.set_category(m_categoryCombo->currentText());

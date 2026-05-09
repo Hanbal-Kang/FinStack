@@ -447,7 +447,7 @@ void BudgetWindow::loadData()
         for (const auto& s : txSeeds) {
             Transaction t;
             t.set_type(Transaction::Expense);
-            t.set_user_id(m_user.get_id());
+            t.set_account_id(m_user.get_id());
             t.set_category(s.cat);
             t.set_amount(s.amount);
             t.set_transac_date(QDateTime::currentDateTime());

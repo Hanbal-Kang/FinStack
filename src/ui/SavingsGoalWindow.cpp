@@ -1,4 +1,5 @@
 #include "ui/SavingsGoalWindow.h"
+#include "services/GoalService.h"
 #include "services/TransactionService.h"
 #include <QProgressBar>
 #include <QGridLayout>
@@ -95,9 +96,7 @@ void SavingsGoalWindow::refreshGoalCards()
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Slots (Button Actions)
-// ─────────────────────────────────────────────────────────────────────────────
+// button actions
 
 void SavingsGoalWindow::onAddGoalClicked()
 {

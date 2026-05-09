@@ -1,5 +1,7 @@
 #include "ui/RegisterWindow.h"
 #include "ui/LoginWindow.h"
+#include "services/AuthService.h"
+#include "utils/Validator.h"
 #include <QApplication>
 #include <QScreen>
 
@@ -135,6 +137,19 @@ void RegisterWindow::setupRightPanel()
     layout->addWidget(m_usernameInput);
     layout->addSpacing(20);
 
+    //Added Email Field
+    m_emailLabel = new QLabel("Email");
+    m_emailLabel->setObjectName("inputLabel");
+    m_emailInput = new QLineEdit();
+    m_emailInput->setPlaceholderText("Enter your email");
+    m_emailInput->setFixedHeight(46);
+    m_emailInput->setObjectName("inputField");
+
+    layout->addWidget(m_emailLabel);
+    layout->addSpacing(6);
+    layout->addWidget(m_emailInput);
+    layout->addSpacing(20);
+
     m_passwordLabel = new QLabel("Password");
     m_passwordLabel->setObjectName("inputLabel");
     m_passwordInput = new QLineEdit();
@@ -207,21 +222,58 @@ void RegisterWindow::setupRightPanel()
 void RegisterWindow::onRegisterClicked()
 {
     QString username = m_usernameInput->text().trimmed();
+    QString email    = m_emailInput->text().trimmed();
     QString password = m_passwordInput->text();
     QString confirm  = m_confirmPasswordInput->text();
 
-    if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
+    //1. Empty-field check
+    if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
         m_errorLabel->setText("Please fill in all fields");
         m_errorLabel->show();
         return;
     }
 
+    //2. Username rule (≥ 3 chars, non-empty) — uses Validator utility (from our utils)
+    if (!Validator::isValidUsername(username)) {
+        m_errorLabel->setText("Username must be at least 3 characters");
+        m_errorLabel->show();
+        return;
+    }
+
+    //3. Email basic sanity check (contains '@' and a '.')
+    if (!email.contains('@') || !email.contains('.')) {
+        m_errorLabel->setText("Please enter a valid email");
+        m_errorLabel->show();
+        return;
+    }
+
+    //4. Password match (Both password fields should have the same pass)
     if (password != confirm) {
         m_errorLabel->setText("Passwords do not match");
         m_errorLabel->show();
         return;
     }
 
+    //5. Password strength (8+ chars, uppercase + digit + symbol)
+    if (!Validator::isPasswordStrong(password)) {
+        m_errorLabel->setText("Password must be 8+ chars with uppercase, digit, and symbol");
+        m_errorLabel->show();
+        return;
+    }
+
+    //6. Hand off to AuthService — inserts hashed password into the DB
+    AuthService auth;
+    if (!auth.registerUser(username, password, email)) {
+        //Most common cause: username already exists (UNIQUE constraint)
+        m_errorLabel->setText("Could not create account. Username may already be taken.");
+        m_errorLabel->show();
+        return;
+    }
+
     m_errorLabel->hide();
-    // TODO: wire up RegisterService
+
+    //Success — go back to LoginWindow so the user can sign in
+    LoginWindow* login = new LoginWindow(nullptr);
+    login->show();
+    this->close();
 }

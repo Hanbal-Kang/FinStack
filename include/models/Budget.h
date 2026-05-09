@@ -11,7 +11,7 @@ public:
         Food = 1,
         Transport = 2,
         Rent = 3,
-        Utilities = 4,
+        Tuition = 4,
         Entertainment = 5,
         Other = 6
     };
@@ -23,7 +23,7 @@ public:
         case Food:          return "Food";
         case Transport:     return "Transport";
         case Rent:          return "Rent";
-        case Utilities:     return "Utilities";
+        case Tuition:     return "Tuition";
         case Entertainment: return "Entertainment";
         default:            return "Other";
         }
@@ -34,7 +34,7 @@ public:
         if (s == "Food")          return Food;
         if (s == "Transport")     return Transport;
         if (s == "Rent")          return Rent;
-        if (s == "Utilities")     return Utilities;
+        if (s == "Tuition")     return Tuition;
         if (s == "Entertainment") return Entertainment;
         return Other;
     }

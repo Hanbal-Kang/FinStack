@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QFile>
-#include "ui/LoginWindow.h"
+#include "AppController.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,14 +8,13 @@ int main(int argc, char *argv[])
     app.setApplicationName("FinStack");
 
     QFile styleFile(":/styles/app.qss");
-    if (styleFile.open(QFile::ReadOnly))
-    {
+    if (styleFile.open(QFile::ReadOnly)) {
         app.setStyleSheet(styleFile.readAll());
         styleFile.close();
     }
 
-    LoginWindow window;
-    window.show();
+    AppController controller;
+    controller.start();
 
     return app.exec();
 }

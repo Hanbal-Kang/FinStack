@@ -18,6 +18,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(PROJECT_SOURCES
     src/main.cpp
 
+    # App controller (navigation hub)
+    src/AppController.cpp
+    include/AppController.h
+
     # UI layer
     src/ui/BaseWindow.cpp
     src/ui/LoginWindow.cpp

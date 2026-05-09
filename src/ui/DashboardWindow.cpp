@@ -257,40 +257,40 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
                           };
 
     for (const auto& d : defs) {
-        QFrame* btn = new QFrame();
+        // Use a real QPushButton so clicks work reliably — style it to look
+        // like a card using QSS (objectName "quickBtn")
+        QPushButton* btn = new QPushButton();
         btn->setObjectName("quickBtn");
         btn->setCursor(Qt::PointingHandCursor);
         btn->setMinimumHeight(80);
         btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+        // Stack icon + label vertically inside the button using a layout
         QVBoxLayout* vl = new QVBoxLayout(btn);
         vl->setContentsMargins(8, 12, 8, 12);
         vl->setSpacing(6);
         vl->setAlignment(Qt::AlignHCenter);
 
-        QLabel* iconLbl = new QLabel(d.icon, btn);
+        QLabel* iconLbl = new QLabel(d.icon);
         iconLbl->setObjectName("quickIcon");
         iconLbl->setAlignment(Qt::AlignCenter);
-        iconLbl->setStyleSheet(QString("color: %1;").arg(d.color));
+        iconLbl->setStyleSheet(QString("color: %1; background: transparent;").arg(d.color));
+        iconLbl->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-        QLabel* label = new QLabel(d.label, btn);
+        QLabel* label = new QLabel(d.label);
         label->setObjectName("quickLabel");
         label->setAlignment(Qt::AlignCenter);
+        label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         vl->addWidget(iconLbl);
         vl->addWidget(label);
 
-        QPushButton* clickArea = new QPushButton(btn);
-        clickArea->setFlat(true);
-        clickArea->setStyleSheet("background:transparent;border:none;");
-        clickArea->setGeometry(0, 0, 1, 1);
-        clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-        if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);
-        else if (d.label == "Deposit")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onDepositClicked);
-        else if (d.label == "Budget")    connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onBudgetClicked);
-        else if (d.label == "Analytics") connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
-        else if (d.label == "History")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
+        // Connect directly to the slot — no overlay hack needed
+        if      (d.label == "Withdraw")  connect(btn, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);
+        else if (d.label == "Deposit")   connect(btn, &QPushButton::clicked, this, &DashboardWindow::onDepositClicked);
+        else if (d.label == "Budget")    connect(btn, &QPushButton::clicked, this, &DashboardWindow::onBudgetClicked);
+        else if (d.label == "Analytics") connect(btn, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
+        else if (d.label == "History")   connect(btn, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
 
         row->addWidget(btn, 1);
     }

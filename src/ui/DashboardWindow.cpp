@@ -297,7 +297,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         QPushButton* clickArea = new QPushButton(btn);
         clickArea->setFlat(true);
         clickArea->setStyleSheet("background:transparent;border:none;");
-        clickArea->setGeometry(0, 0, 200, 20);
+        clickArea->setGeometry(0, 0, 300, 100);
         clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);

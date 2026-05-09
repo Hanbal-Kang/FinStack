@@ -11,9 +11,6 @@ TransactionWindow::TransactionWindow(const User& user, QWidget* parent) : BaseWi
 {
     //In construcotr setting up the window
     setupWindowGeometry(500 , 650);
-
-    //intialize calls - setupUI() and applyStyles()
-    initialize();
 }
 
 //Building entire window layout here
@@ -67,6 +64,8 @@ void TransactionWindow::setupUI()
     headerRow->addLayout(titleCol);
     headerRow->addStretch();
     headerRow->addWidget(closeBtn);
+
+    root->addLayout(headerRow);
 
     //Divider line
     QFrame* divider = new QFrame();

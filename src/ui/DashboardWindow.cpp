@@ -1,6 +1,7 @@
 #include "ui/DashboardWindow.h"
 #include "ui/DepositWindow.h"
 #include "ui/WithdrawWindow.h"
+#include "ui/ProfileWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -124,7 +125,10 @@ void DashboardWindow::onDepositClicked()
 void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
-void DashboardWindow::onProfileClicked()   { emit navigateToProfile(); }
+void DashboardWindow::onProfileClicked()
+{
+
+}
 
 void DashboardWindow::buildNavbar(QWidget* parent)
 {

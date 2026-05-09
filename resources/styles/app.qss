@@ -596,3 +596,60 @@ QPushButton#txConfirmBtn:hover {
     background-color: #16a34a;
 }
 
+
+/* ── Profile page ───────────────────────────────────────────────────────── */
+#profileAvatar {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 28px;
+    font-weight: 700;
+}
+#profileUsername {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+}
+#cardTitle {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+#profileInfoRow {
+    background-color: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 10px;
+}
+#infoCardIcon {
+    color: #8b949e;
+    font-size: 14px;
+}
+#infoCardLabel {
+    color: #8b949e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+#infoCardValue {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+}
+#primaryBtn {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 8px;
+    padding: 0 18px;
+    font-weight: 600;
+}
+#primaryBtn:hover { background-color: rgba(139, 92, 246, 0.25); }
+#dangerBtn {
+    background-color: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+    border: 1px solid rgba(248, 81, 73, 0.4);
+    border-radius: 8px;
+    padding: 0 18px;
+    font-weight: 600;
+}
+#dangerBtn:hover { background-color: rgba(248, 81, 73, 0.25); }

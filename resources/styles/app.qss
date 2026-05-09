@@ -420,3 +420,175 @@ QLineEdit#budgetInput {
     font-size: 13px;
     padding: 4px 8px;
 }
+
+/* ── Transaction Window ── */
+
+QMainWindow#TransactionWindow, QWidget {
+    background-color: #0d1117;
+}
+
+/* Icon box */
+QLabel#txtIconBox {
+    background-color: #1a7a4a;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Title */
+QLabel#txTitle {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Subtitle */
+QLabel#txSubtitle {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* Divider */
+QFrame#txDivider {
+    color: #1e2530;
+    background-color: #1e2530;
+    border: none;
+    max-height: 1px;
+}
+
+/* Close button */
+QPushButton#txCloseBtn {
+    background-color: #1e2530;
+    color: #9ca3af;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton#txCloseBtn:hover {
+    background-color: #2a3140;
+    color: #ffffff;
+}
+
+/* Field labels */
+QLabel#txFieldLabel {
+    color: #e5e7eb;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Rs sign */
+QLabel#txRsSign {
+    background-color: #1e2530;
+    color: #3b82f6;
+    font-size: 16px;
+    font-weight: bold;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border: 1px solid #2a3140;
+    border-right: none;
+}
+
+/* Amount input */
+QLineEdit#txAmountInput {
+    background-color: #131920;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    border: 1px solid #2a3140;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-left: none;
+    padding-left: 8px;
+}
+QLineEdit#txAmountInput:focus {
+    border-color: #3b82f6;
+}
+
+/* Category combo */
+QComboBox#txComboBox {
+    background-color: #131920;
+    color: #ffffff;
+    border: 1px solid #2a3140;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+}
+QComboBox#txComboBox:focus {
+    border-color: #3b82f6;
+}
+QComboBox#txComboBox::drop-down {
+    border: none;
+    width: 30px;
+}
+QComboBox#txComboBox QAbstractItemView {
+    background-color: #1e2530;
+    color: #ffffff;
+    selection-background-color: #2a3140;
+    border: 1px solid #2a3140;
+}
+
+/* Date edit */
+QDateEdit#txDateEdit {
+    background-color: #131920;
+    color: #ffffff;
+    border: 1px solid #2a3140;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+}
+QDateEdit#txDateEdit:focus {
+    border-color: #3b82f6;
+}
+QDateEdit#txDateEdit::drop-down {
+    border: none;
+    width: 30px;
+}
+
+/* Description */
+QTextEdit#txDescInput {
+    background-color: #131920;
+    color: #ffffff;
+    border: 1px solid #2a3140;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QTextEdit#txDescInput:focus {
+    border-color: #3b82f6;
+}
+
+/* Error label */
+QLabel#txErrorLabel {
+    color: #ef4444;
+    font-size: 12px;
+}
+
+/* Cancel button */
+QPushButton#txCancelBtn {
+    background-color: #1e2530;
+    color: #9ca3af;
+    border: 1px solid #2a3140;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+QPushButton#txCancelBtn:hover {
+    background-color: #2a3140;
+    color: #ffffff;
+}
+
+/* Confirm button */
+QPushButton#txConfirmBtn {
+    background-color: #22c55e;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+QPushButton#txConfirmBtn:hover {
+    background-color: #16a34a;
+}
+

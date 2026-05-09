@@ -118,6 +118,7 @@ void DashboardWindow::onWithdrawClicked()
 void DashboardWindow::onDepositClicked()
 {
     DepositWindow* w = new DepositWindow (m_user , this);
+    w->show();
 }
 
 void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
@@ -296,7 +297,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         QPushButton* clickArea = new QPushButton(btn);
         clickArea->setFlat(true);
         clickArea->setStyleSheet("background:transparent;border:none;");
-        clickArea->setGeometry(0, 0, 1, 1);
+        clickArea->setGeometry(0, 0, 200, 20);
         clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);

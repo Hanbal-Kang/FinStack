@@ -90,6 +90,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         include/ui/TransactionHistory.h
+        src/ui/TransactionHistory.cpp
     )
 else()
     if(ANDROID)

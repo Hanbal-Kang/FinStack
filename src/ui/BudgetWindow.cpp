@@ -81,7 +81,7 @@ void BudgetWindow::refreshBudgets()
         double categorySpent = m_spent.value(meta.name, 0.0);
 
         for (const auto& b : m_budgets)
-            if (b.get_category() == meta.name) { limit = b.get_monthly_limit(); break; }
+            if (Budget::categoryToString(b.get_category()) == meta.name) { limit = b.get_monthly_limit(); break; }
 
         QFrame* card = makeCategoryCard(i, meta.emoji, meta.name, limit, categorySpent);
         m_gridLayout->addWidget(card, i / 2, i % 2);
@@ -102,7 +102,7 @@ void BudgetWindow::onEditClicked(int index)
     double currentLimit = 0.0;
     const QString& cat = m_categories[index].name;
     for (const auto& b : m_budgets)
-        if (b.get_category() == cat) { currentLimit = b.get_monthly_limit(); break; }
+        if (Budget::categoryToString(b.get_category()) == cat) { currentLimit = b.get_monthly_limit(); break; }
 
     m_editInputs[index]->setText(QString::number(currentLimit, 'f', 2));
     m_editInputs[index]->setFocus();
@@ -124,7 +124,7 @@ void BudgetWindow::onSaveClicked(int index)
     const QString& cat = m_categories[index].name;
     bool found = false;
     for (auto& b : m_budgets) {
-        if (b.get_category() == cat) {
+        if (Budget::categoryToString(b.get_category()) == cat) {
             b.set_monthly_limit(newLimit);
             found = true;
             break;
@@ -133,7 +133,7 @@ void BudgetWindow::onSaveClicked(int index)
     if (!found) {
         Budget newBudget;
         newBudget.set_user_id(m_user.get_id());
-        newBudget.set_category(cat);
+        newBudget.set_category(Budget::categoryFromString(cat));
         newBudget.set_monthly_limit(newLimit);
         m_budgets.append(newBudget);
     }
@@ -275,7 +275,7 @@ void BudgetWindow::buildCategoryGrid(QVBoxLayout* root)
         double spent = m_spent.value(meta.name, 0.0);
 
         for (const auto& b : m_budgets)
-            if (b.get_category() == meta.name) { limit = b.get_monthly_limit(); break; }
+            if (Budget::categoryToString(b.get_category()) == meta.name) { limit = b.get_monthly_limit(); break; }
 
         QFrame* card = makeCategoryCard(i, meta.emoji, meta.name, limit, spent);
         m_gridLayout->addWidget(card, i / 2, i % 2);
@@ -428,7 +428,7 @@ void BudgetWindow::loadData()
         for (const auto& s : seeds) {
             Budget b;
             b.set_user_id(m_user.get_id());
-            b.set_category(s.cat);
+            b.set_category(Budget::categoryFromString(s.cat));
             b.set_monthly_limit(s.limit);
             m_budgets.append(b);
         }

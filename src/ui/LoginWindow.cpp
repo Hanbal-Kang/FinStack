@@ -1,8 +1,10 @@
 #include "ui/LoginWindow.h"
+#include "ui/RegisterWindow.h"
 #include <QApplication>
 #include <QScreen>
 #include <QSizePolicy>
 #include <QSpacerItem>
+#include <ui/DashboardWindow.h>
 
 LoginWindow::LoginWindow(QWidget* parent) : BaseWindow(parent)
 {
@@ -217,26 +219,22 @@ void LoginWindow::onLoginClicked()
     }
     m_errorLabel->hide();
 
-    // ── TODO: replace with real AuthService call when implemented ─────────────
-    // AuthService svc;
-    // User user = svc.login(username, password);
-    // if (!user.isValid()) {
-    //     m_errorLabel->setText("Invalid username or password");
-    //     m_errorLabel->show();
-    //     return;
-    // }
+    // Tester Just to test the functionality of Dashboard (Hardcoded)
+    User testUser;
+    testUser.set_username(username);
 
-    // Stub user — lets navigation work right now
-    User user;
-    user.set_id(1);
-    user.set_username(username);
-
-    emit loginSucceeded(user);   // AppController picks this up → shows Dashboard
+    DashboardWindow* dashboard = new DashboardWindow(testUser, nullptr);
+    dashboard->show();
+    this->close();
 }
 
 void LoginWindow::onRegisterClicked()
 {
-    // TODO: emit navigateToRegister() when RegisterWindow is ready
+    connect(m_registerButton, &QPushButton::clicked, this, [this]() {
+        RegisterWindow* reg = new RegisterWindow(nullptr);
+        reg->show();
+        this->close();
+    });
 }
 
 void LoginWindow::onForgotPasswordClicked()

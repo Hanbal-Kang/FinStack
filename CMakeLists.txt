@@ -32,9 +32,11 @@ set(PROJECT_SOURCES
     src/ui/BudgetWindow.cpp
     src/ui/SavingsGoalWindow.cpp
     src/ui/ProfileWindow.cpp
+    src/ui/DepositWindow.cpp
+    src/ui/WithdrawWindow.cpp
 
     # Services
-    src/services/BaseService.cpp
+
     src/services/AuthService.cpp
     src/services/TransactionService.cpp
     src/services/BudgetService.cpp
@@ -93,6 +95,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FinStack
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        include/ui/DepositWindow.h
+        include/ui/WithdrawWindow.h
     )
 else()
     if(ANDROID)

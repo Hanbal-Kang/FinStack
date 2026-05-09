@@ -1,4 +1,6 @@
 #include "ui/DashboardWindow.h"
+#include "ui/DepositWindow.h"
+#include "ui/WithdrawWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -6,6 +8,7 @@
 #include <QSpacerItem>
 #include <QDate>
 #include <QStyle>
+#include <utility>
 
 //  Constructor
 DashboardWindow::DashboardWindow(const User& user, QWidget* parent)
@@ -93,20 +96,31 @@ void DashboardWindow::refreshDashboard()
             delete item;
         }
         QMap<QString, double> spent;
-        for (const auto& tx : m_transactions)
+        for (const auto& tx : std::as_const(m_transactions)) {
             if (tx.get_type() == Transaction::Expense)
                 spent[tx.get_category()] += tx.get_amount();
-
+        }
         int row = 0;
-        for (const auto& b : m_budgets) {
-            double s = spent.value(b.get_category(), 0.0);
-            m_budgetLayout->insertWidget(row++, makeBudgetBar(b.get_category(), s, b.get_monthly_limit()));
+        for (const auto& b : std::as_const(m_budgets)) {
+            // CHANGE: convert enum to QString before using as map key and passing to makeBudgetBar
+            QString catName = Budget::categoryToString(b.get_category());
+            double s = spent.value(catName, 0.0);
+            m_budgetLayout->insertWidget(row++, makeBudgetBar(catName, s, b.get_monthly_limit()));
         }
     }
 }
 
-void DashboardWindow::onWithdrawClicked()  { emit navigateToWithdraw(); }
-void DashboardWindow::onDepositClicked()   { emit navigateToDeposit(); }
+void DashboardWindow::onWithdrawClicked()
+{
+    WithdrawWindow* w = new WithdrawWindow(m_user, this);
+    w->show();
+}
+void DashboardWindow::onDepositClicked()
+{
+    DepositWindow* w = new DepositWindow (m_user , this);
+    w->show();
+}
+
 void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
@@ -285,12 +299,17 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         vl->addWidget(iconLbl);
         vl->addWidget(label);
 
-        // Connect directly to the slot — no overlay hack needed
-        if      (d.label == "Withdraw")  connect(btn, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);
-        else if (d.label == "Deposit")   connect(btn, &QPushButton::clicked, this, &DashboardWindow::onDepositClicked);
-        else if (d.label == "Budget")    connect(btn, &QPushButton::clicked, this, &DashboardWindow::onBudgetClicked);
-        else if (d.label == "Analytics") connect(btn, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
-        else if (d.label == "History")   connect(btn, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
+        QPushButton* clickArea = new QPushButton(btn);
+        clickArea->setFlat(true);
+        clickArea->setStyleSheet("background:transparent;border:none;");
+        clickArea->setGeometry(0, 0, 300, 100);
+        clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+        if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);
+        else if (d.label == "Deposit")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onDepositClicked);
+        else if (d.label == "Budget")    connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onBudgetClicked);
+        else if (d.label == "Analytics") connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
+        else if (d.label == "History")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
 
         row->addWidget(btn, 1);
     }
@@ -364,8 +383,9 @@ void DashboardWindow::buildBottomRow(QVBoxLayout* layout)
     m_budgetLayout->setContentsMargins(0, 0, 0, 0);
     m_budgetLayout->setSpacing(12);
 
+    // CHANGE: spent map key is now QString (category name) to match transaction's get_category()
     QMap<QString, double> spent;
-    for (const auto& tx : m_transactions)
+    for (const auto& tx : std::as_const(m_transactions))
         if (tx.get_type() == Transaction::Expense)
             spent[tx.get_category()] += tx.get_amount();
 
@@ -374,11 +394,16 @@ void DashboardWindow::buildBottomRow(QVBoxLayout* layout)
         for (const auto& cat : placeholders)
             m_budgetLayout->addWidget(makeBudgetBar(cat, spent.value(cat, 0.0), 0.0));
     } else {
-        for (const auto& b : m_budgets)
-            m_budgetLayout->addWidget(makeBudgetBar(b.get_category(),
-                                                    spent.value(b.get_category(), 0.0),
+        for (const auto& b : std::as_const(m_budgets)) {
+            // CHANGE: convert Budget::Category enum to QString using the new helper
+            QString catName = Budget::categoryToString(b.get_category());
+            m_budgetLayout->addWidget(makeBudgetBar(catName,
+                                                    spent.value(catName, 0.0),
                                                     b.get_monthly_limit()));
+        }
     }
+
+
     m_budgetLayout->addStretch();
     budOuter->addWidget(barsWidget, 1);
 

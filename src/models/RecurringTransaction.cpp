@@ -5,6 +5,8 @@ RecurringTransaction::RecurringTransaction()
     reccur_transac_id = 0;
     user_id = 0;
 
+    amount = 0.0;
+
     category = "";
     description = "";
     interval = "";
@@ -31,6 +33,11 @@ double RecurringTransaction::get_amount() const
 QString RecurringTransaction::get_category() const
 {
     return this->category;
+}
+
+QString RecurringTransaction::get_description() const
+{
+    return this->description;
 }
 
 QString RecurringTransaction::get_interval() const
@@ -62,6 +69,11 @@ void RecurringTransaction::set_amount(double amount)
 void RecurringTransaction::set_category(const QString& category)
 {
     this->category = category;
+}
+
+void RecurringTransaction::set_description(const QString& description)
+{
+    this->description = description;
 }
 
 void RecurringTransaction::set_interval(const QString& interval)

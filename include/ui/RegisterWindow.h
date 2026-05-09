@@ -25,6 +25,8 @@ private:
     QLabel*      m_subheading;
     QLabel*      m_usernameLabel;
     QLineEdit*   m_usernameInput;
+    QLabel*      m_emailLabel;
+    QLineEdit*   m_emailInput;
     QLabel*      m_passwordLabel;
     QLineEdit*   m_passwordInput;
     QLabel*      m_confirmPasswordLabel;

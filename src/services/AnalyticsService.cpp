@@ -110,6 +110,16 @@ void AnalyticsWindow::setupBreakdownPanel()
     m_breakdownPanel = new QFrame(this);
     m_breakdownPanel->setObjectName("breakdownPanel");
     new QVBoxLayout(m_breakdownPanel);
+double AnalyticsService::getTotalIncome(int userId) {
+    QSqlQuery q = DatabaseManager::instance().prepare(
+        "SELECT SUM(amount) FROM transactions "
+        "WHERE type = 'income' AND account_id IN "
+        "(SELECT id FROM accounts WHERE user_id = ?)"
+        );
+    q.addBindValue(userId);
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next()) return 0.0;
+    QVariant val = q.value(0);
+    return val.isNull() ? 0.0 : val.toDouble();
 }
 
 void AnalyticsWindow::loadTransactions()
@@ -331,4 +341,15 @@ void AnalyticsWindow::onBackClicked()
 {
     emit backToDashboard();
     close();
+double AnalyticsService::getCategoryExpense(int userId, const QString& category) {
+    QSqlQuery q = DatabaseManager::instance().prepare(
+        "SELECT SUM(amount) FROM transactions "
+        "WHERE type = 'expense' AND category = ? "
+        "AND account_id IN (SELECT id FROM accounts WHERE user_id = ?)"
+        );
+    q.addBindValue(category);
+    q.addBindValue(userId);
+    if (!DatabaseManager::instance().executePrepared(q) || !q.next()) return 0.0;
+    QVariant val = q.value(0);
+    return val.isNull() ? 0.0 : val.toDouble();
 }

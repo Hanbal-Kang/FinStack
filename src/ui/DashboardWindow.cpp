@@ -1,4 +1,6 @@
 #include "ui/DashboardWindow.h"
+#include "ui/DepositWindow.h"
+#include "ui/WithdrawWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -108,8 +110,16 @@ void DashboardWindow::refreshDashboard()
     }
 }
 
-void DashboardWindow::onWithdrawClicked()  { emit navigateToWithdraw(); }
-void DashboardWindow::onDepositClicked()   { emit navigateToDeposit(); }
+void DashboardWindow::onWithdrawClicked()
+{
+    WithdrawWindow* w = new WithdrawWindow(m_user, this);
+    w->show();
+}
+void DashboardWindow::onDepositClicked()
+{
+    DepositWindow* w = new DepositWindow (m_user , this);
+}
+
 void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }

@@ -518,6 +518,7 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category, double spent, d
 // =============================================================================
 void DashboardWindow::loadData()
 {
+    //CHANGE : HANBAL
     // Pull this user's transactions and budgets from the DB via the service layer.
     // The services return std::vector — QList's range constructor wraps the
     // begin/end iterators, so we get a clean QList<T> without copying twice.

@@ -8,9 +8,11 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMap>
+#include <QPainter>
 #include <vector>
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
 #include <QtCharts/QChart>
 
 class AnalyticsWindow : public BaseWindow
@@ -25,53 +27,60 @@ signals:
     void backToDashboard();
 
 protected:
-    void setupUI() override;
+    void setupUI()     override;
     void applyStyles() override;
 
 private:
-    User m_user;
+    User                     m_user;
     std::vector<Transaction> m_transactions;
-    QString m_currentPeriod;
+    QString                  m_currentPeriod;
 
-    // summary card labels
+    //summary card labels
     QLabel* m_totalLabel      = nullptr;
     QLabel* m_highestCatLabel = nullptr;
     QLabel* m_dailyAvgLabel   = nullptr;
 
-    //time period buttons
+    //period toggle buttons
     QPushButton* m_weekBtn  = nullptr;
     QPushButton* m_monthBtn = nullptr;
     QPushButton* m_yearBtn  = nullptr;
     QPushButton* m_backBtn  = nullptr;
 
-    // pie chart
+    //pie chart
     QChart*     m_chart     = nullptr;
     QPieSeries* m_series    = nullptr;
     QChartView* m_chartView = nullptr;
 
-    // right panel
-    QFrame* m_breakdownPanel = nullptr;
+    //right panel
+    QFrame*      m_breakdownPanel = nullptr;
+    QVBoxLayout* m_breakdownLayout = nullptr;
 
-    // setup
-    void setupHeaderSection();
-    void setupSummaryCards();
-    void setupPieChart();
-    void setupBreakdownPanel();
+    //layouts
+    QHBoxLayout* m_headerRow  = nullptr;
+    QHBoxLayout* m_summaryRow = nullptr;
 
-    // data
+    //setup helpers (called once from setupUI)
+    void buildHeaderRow(QVBoxLayout* root);
+    void buildSummaryRow(QVBoxLayout* root);
+    void buildPieChart(QVBoxLayout* leftLayout);
+    void buildBreakdownPanel(QVBoxLayout* rightLayout);
+
+    //data helpers
     void loadTransactions();
     void refreshAll();
 
-    // calculations
-    QMap<QString, double> getCategoryTotals();
-    double getTotalSpending();
+    QMap<QString, double> getCategoryTotals() const;
+    double                getTotalSpending()  const;
 
-    // UI update
+    //UI update helpers
     void updateSummaryCards();
     void updatePieChart();
     void updateBreakdownPanel();
 
-    QColor getColorForCategory(const QString& cat);
+    //period-toggle helper
+    void setPeriod(const QString& period);   // sets names + repolishes + reloads
+
+    QColor getColorForCategory(const QString& cat) const;
 
 private slots:
     void onWeekClicked();

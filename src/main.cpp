@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     QDir().mkpath(dataDir);   // ensure folder exists
     QString dbPath = dataDir + "/finstack.db";
 
+    //Just to test wether my database is opened or not
+    qDebug() << "DB path:" << dbPath;
+
     if (!DatabaseManager::instance().open(dbPath)) {
         qDebug() << "Could not open database — exiting";
         return 1;

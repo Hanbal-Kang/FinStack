@@ -4,27 +4,22 @@
 #include "models/Transaction.h"
 #include <QLabel>
 #include <QPushButton>
-#include <QComboBox>
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QGridLayout>
-#include <QScrollArea>
+#include <QMap>
+#include <vector>
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QChart>
-#include <QVector>
 
 class AnalyticsWindow : public BaseWindow
 {
     Q_OBJECT
 
 public:
-    explicit AnalyticsWindow(const User& currentUser, QWidget* parent = nullptr);
+    explicit AnalyticsWindow(const User& user, QWidget* parent = nullptr);
     ~AnalyticsWindow() override = default;
-
-    // Reload all analytics data (call after new transactions)
-    void refreshData();
 
 signals:
     void backToDashboard();
@@ -34,74 +29,53 @@ protected:
     void applyStyles() override;
 
 private:
-    // data
-    User user;
-    QVector<Transaction> transactions; // loaded from DB for selected period
+    User m_user;
+    std::vector<Transaction> m_transactions;
+    QString m_currentPeriod;
 
+    // summary card labels
+    QLabel* m_totalLabel      = nullptr;
+    QLabel* m_highestCatLabel = nullptr;
+    QLabel* m_dailyAvgLabel   = nullptr;
 
-    // period filter
-    QString selectedPeriod;
+    //time period buttons
+    QPushButton* m_weekBtn  = nullptr;
+    QPushButton* m_monthBtn = nullptr;
+    QPushButton* m_yearBtn  = nullptr;
+    QPushButton* m_backBtn  = nullptr;
 
-    //summary cards(top panel)
-    QLabel* totalSpendingLabel = nullptr; // total spendings
-    QLabel* totalSubtitleLabel = nullptr; // "Across N categories"
-    QLabel* highestCatLabel = nullptr; // category
-    QLabel* highestAmtLabel = nullptr; // contribution
-    QLabel* dailyAvgLabel = nullptr; // daily average
-    QLabel* dailySubtitleLabel = nullptr; // daily avg subtitle
+    // pie chart
+    QChart*     m_chart     = nullptr;
+    QPieSeries* m_series    = nullptr;
+    QChartView* m_chartView = nullptr;
 
-    //Period buttons
-    QPushButton* weekBtn = nullptr;
-    QPushButton* monthBtn = nullptr;
-    QPushButton* yearBtn = nullptr;
+    // right panel
+    QFrame* m_breakdownPanel = nullptr;
 
-    //Pie chart
-    QChart* chart = nullptr;
-    QPieSeries* pieSeries = nullptr;
-    QChartView* chartView = nullptr;
-
-    // Legend labels (below pie)
-    // Each entry: coloured dot + category name + percentage
-    QFrame* legendFrame = nullptr;
-
-    //Category breakdown list (right panel)
-    // Each row: icon, name, rank label, dollar amount,
-    // percentage label, progress bar
-    QFrame* breakdownFrame = nullptr;
-    QScrollArea* breakdownScroll = nullptr;
-
-    //Back button
-    QPushButton* backBtn = nullptr;
-
-    //Private helper functions
-    void setupHeaderBar();
+    // setup
+    void setupHeaderSection();
     void setupSummaryCards();
-    void setupPeriodToggle();
     void setupPieChart();
-    void setupLegend();
-    void setupCategoryBreakdown();
+    void setupBreakdownPanel();
 
-    // Aggregates transactions into per-category totals.
-    // Returns map of { categoryName -> total amount }
-    QMap<QString, double> computeCategoryTotals() const;
+    // data
+    void loadTransactions();
+    void refreshAll();
 
-    // Computes total spending across all categories
-    double computeTotalSpending() const;
+    // calculations
+    QMap<QString, double> getCategoryTotals();
+    double getTotalSpending();
 
-    // Re-renders pie slices, legend, breakdown rows, and
-    // summary card values using current transactions data
-    void updateChartData();
-    void updateSummaryCards(double total, const QMap<QString, double>& totals);
-    void updateBreakdownRows(double total, const QMap<QString, double>& totals);
-    void updateLegend(double total, const QMap<QString, double>& totals);
+    // UI update
+    void updateSummaryCards();
+    void updatePieChart();
+    void updateBreakdownPanel();
 
-    // Builds a single breakdown row widget for one category
-    QFrame* buildBreakdownRow(const QString& category, double amount, double percentage,int rank,const QColor& color);
-
-    // Returns a deterministic color for each category name
-    QColor colorForCategory(const QString& category) const;
+    QColor getColorForCategory(const QString& cat);
 
 private slots:
-    void onPeriodChanged(const QString& period);
+    void onWeekClicked();
+    void onMonthClicked();
+    void onYearClicked();
     void onBackClicked();
 };

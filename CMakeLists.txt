@@ -89,6 +89,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FinStack
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        include/ui/TransactionHistory.h
     )
 else()
     if(ANDROID)

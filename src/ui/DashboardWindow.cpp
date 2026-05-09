@@ -116,11 +116,30 @@ void DashboardWindow::refreshDashboard()
 void DashboardWindow::onWithdrawClicked()
 {
     WithdrawWindow* w = new WithdrawWindow(m_user, this);
+
+    // When the user confirms, save the Transaction via the service, then
+    // refresh Dashboard so the new row + updated totals appear immediately.
+    connect(w, &TransactionWindow::transaction_confirmed, this,
+            [this](const Transaction& t) {
+                TransactionService svc;
+                if (svc.addTransaction(t))
+                    refreshDashboard();
+            });
+
     w->show();
 }
+
 void DashboardWindow::onDepositClicked()
 {
-    DepositWindow* w = new DepositWindow (m_user , this);
+    DepositWindow* w = new DepositWindow(m_user, this);
+
+    connect(w, &TransactionWindow::transaction_confirmed, this,
+            [this](const Transaction& t) {
+                TransactionService svc;
+                if (svc.addTransaction(t))
+                    refreshDashboard();
+            });
+
     w->show();
 }
 

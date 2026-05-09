@@ -2,143 +2,150 @@
 #include "services/TransactionService.h"
 #include <QScrollArea>
 #include <QMessageBox>
+#include <QStyle>
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Constructor
-// ─────────────────────────────────────────────────────────────────────────────
-
-TransactionHistory::TransactionHistory(const User& user, QWidget* parent)
+TransactionHistoryWindow::TransactionHistoryWindow(const User& user, QWidget* parent)
     : BaseWindow(parent), m_user(user)
 {
-    // Sets standard layout size for the history view
     setupWindowGeometry(1100, 720);
     initialize();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  setupUI — Builds the scrollable table area
-// ─────────────────────────────────────────────────────────────────────────────
-
-void TransactionHistory::setupUI()
+void TransactionHistoryWindow::setupUI()
 {
     QWidget* central = new QWidget(this);
     setCentralWidget(central);
 
-    QScrollArea* outerScroll = new QScrollArea(central);
-    outerScroll->setWidgetResizable(true);
-    outerScroll->setFrameShape(QFrame::NoFrame);
-    outerScroll->setObjectName("pageScroll");
+    QScrollArea* scroll = new QScrollArea(central);
+    scroll->setWidgetResizable(true);
+    scroll->setFrameShape(QFrame::NoFrame);
+    scroll->setObjectName("pageScroll");
 
     QWidget* page = new QWidget();
     page->setObjectName("pageBody");
-
     QVBoxLayout* pageLayout = new QVBoxLayout(page);
     pageLayout->setContentsMargins(40, 36, 40, 40);
     pageLayout->setSpacing(24);
 
-    // Building the UI sections
+    // Assembly using your builders
     buildHeader(pageLayout);
     buildSummaryCards(pageLayout);
     buildFilterBar(pageLayout);
     buildTableHeader(pageLayout);
-
-    // Container for the dynamic rows
-    QWidget* tableArea = new QWidget();
-    m_tableRows = new QVBoxLayout(tableArea);
-    m_tableRows->setContentsMargins(0, 0, 0, 0);
-    m_tableRows->setSpacing(8);
-    pageLayout->addWidget(tableArea);
+    buildTableArea(pageLayout);
 
     pageLayout->addStretch();
-    outerScroll->setWidget(page);
+    scroll->setWidget(page);
 
     QVBoxLayout* root = new QVBoxLayout(central);
     root->setContentsMargins(0, 0, 0, 0);
-    root->addWidget(outerScroll);
+    root->addWidget(scroll);
 
     refreshHistory();
 }
 
-void TransactionHistory::applyStyles()
+void TransactionHistoryWindow::applyStyles()
 {
     loadGlobalStylesheet();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Data Handling
-// ─────────────────────────────────────────────────────────────────────────────
 
-void TransactionHistory::loadData()
+//  Data & Rendering Logic
+
+void TransactionHistoryWindow::loadData()
 {
-    // Fetches all transactions for the current user
     TransactionService service;
     m_allTransactions = service.getAllByUser(m_user.get_id());
 }
 
-void TransactionHistory::refreshHistory()
+void TransactionHistoryWindow::applyFilters()
 {
-    loadData();
-    renderRows();
+    m_filtered.clear();
+    QString search = m_searchInput->text().trimmed().toLower();
+
+    for (const auto& tx : m_allTransactions) {
+        // Filter by Type
+        if (m_activeFilter == "Income" && tx.get_type() != Transaction::Income) continue;
+        if (m_activeFilter == "Expense" && tx.get_type() != Transaction::Expense) continue;
+
+        // Filter by Search (Description or Category)
+        if (!search.isEmpty()) {
+            if (!tx.get_description().toLower().contains(search) &&
+                !tx.get_category().toLower().contains(search)) continue;
+        }
+        m_filtered.push_back(tx);
+    }
 }
 
-void TransactionHistory::renderRows()
+void TransactionHistoryWindow::renderRows()
 {
-    // Clear existing rows first
+    // Clear layout
     while (m_tableRows->count() > 0) {
         QLayoutItem* item = m_tableRows->takeAt(0);
         if (item->widget()) delete item->widget();
         delete item;
     }
 
-    if (m_allTransactions.empty()) {
-        m_tableRows->addWidget(new QLabel("No transactions found."));
-        return;
-    }
-
-    // Add each transaction as a styled row
-    for (const auto& tx : m_allTransactions) {
-        m_tableRows->addWidget(makeRow(tx));
+    if (m_filtered.empty()) {
+        m_emptyLabel->show();
+    } else {
+        m_emptyLabel->hide();
+        for (const auto& tx : m_filtered) {
+            m_tableRows->addWidget(makeRow(tx));
+        }
     }
     m_tableRows->addStretch();
 }
 
-QWidget* TransactionHistory::makeRow(const Transaction& tx)
+QWidget* TransactionHistoryWindow::makeRow(const Transaction& tx)
 {
     QFrame* row = new QFrame();
-    row->setObjectName("txRow");
-    row->setFixedHeight(60);
-
+    row->setObjectName("tableRow");
     QHBoxLayout* layout = new QHBoxLayout(row);
-    layout->setContentsMargins(15, 0, 15, 0);
 
     bool isIncome = (tx.get_type() == Transaction::Income);
 
-    QLabel* desc = new QLabel(tx.get_description());
+    QLabel* date = new QLabel(tx.get_transac_date().date().toString("MMM d, yyyy"));
+    QLabel* desc = new QLabel(tx.get_description().isEmpty() ? tx.get_category() : tx.get_description());
     desc->setStyleSheet("font-weight: bold; color: #E6EDF3;");
 
-    QLabel* amt = new QLabel((isIncome ? "+ Rs " : "- Rs ") + QString::number(tx.get_amount(), 'f', 2));
-    amt->setStyleSheet(isIncome ? "color: #3FB950;" : "color: #F85149;");
-    amt->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QLabel* cat = new QLabel(tx.get_category());
+    cat->setObjectName("txCategoryPill");
+
+    QString sign = isIncome ? "+" : "-";
+    QLabel* amt = new QLabel(sign + " Rs " + QString::number(tx.get_amount(), 'f', 2));
+    amt->setObjectName(isIncome ? "txAmountIncome" : "txAmountExpense");
 
     QPushButton* delBtn = new QPushButton("🗑");
+    delBtn->setObjectName("navIconBtn");
     delBtn->setFixedSize(30, 30);
-    delBtn->setCursor(Qt::PointingHandCursor);
     connect(delBtn, &QPushButton::clicked, this, [this, tx](){ onDeleteClicked(tx.get_transaction_id()); });
 
-    layout->addWidget(desc, 1);
-    layout->addWidget(amt);
-    layout->addWidget(delBtn);
+    layout->addWidget(date, 2);
+    layout->addWidget(desc, 4);
+    layout->addWidget(cat, 2);
+    layout->addWidget(amt, 2, Qt::AlignRight);
+    layout->addWidget(delBtn, 1);
 
     return row;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Slots
-// ─────────────────────────────────────────────────────────────────────────────
 
-void TransactionHistory::onDeleteClicked(int transactionId)
+//  Slots & Helpers
+
+
+void TransactionHistoryWindow::refreshHistory()
 {
-    auto reply = QMessageBox::question(this, "Delete", "Delete this record?", QMessageBox::Yes | QMessageBox::No);
+    loadData();
+    applyFilters();
+    renderRows();
+    updateSummaryCards();
+}
+
+void TransactionHistoryWindow::onDeleteClicked(int transactionId)
+{
+    auto reply = QMessageBox::question(this, "Confirm Delete", "Delete this transaction?",
+                                       QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         TransactionService service;
         service.deleteTransaction(transactionId);
@@ -146,8 +153,28 @@ void TransactionHistory::onDeleteClicked(int transactionId)
     }
 }
 
-void TransactionHistory::onBackClicked()
+void TransactionHistoryWindow::setActiveFilter(const QString& filter)
 {
-    emit navigateBack();
-    this->close();
+    m_activeFilter = filter;
+
+    // Repolish buttons for CSS active state updates
+    auto repolish = [](QWidget* w) {
+        w->style()->unpolish(w);
+        w->style()->polish(w);
+        w->update();
+    };
+
+    m_allBtn->setObjectName(filter == "All" ? "filterBtnActive" : "filterBtn");
+    m_incomeBtn->setObjectName(filter == "Income" ? "filterBtnActive" : "filterBtn");
+    m_expenseBtn->setObjectName(filter == "Expense" ? "filterBtnActive" : "filterBtn");
+
+    repolish(m_allBtn); repolish(m_incomeBtn); repolish(m_expenseBtn);
+    applyFilters();
+    renderRows();
 }
+
+void TransactionHistoryWindow::onBackClicked() { emit navigateBack(); close(); }
+void TransactionHistoryWindow::onSearchChanged(const QString&) { applyFilters(); renderRows(); }
+void TransactionHistoryWindow::onAllClicked()     { setActiveFilter("All"); }
+void TransactionHistoryWindow::onIncomeClicked()  { setActiveFilter("Income"); }
+void TransactionHistoryWindow::onExpenseClicked() { setActiveFilter("Expense"); }

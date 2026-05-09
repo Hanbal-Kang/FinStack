@@ -1,5 +1,6 @@
 #include "ui/ProfileWindow.h"
 #include "ui/LoginWindow.h"
+#include "ui/DashboardWindow.h"
 #include "utils/Formatter.h"
 #include <QScrollArea>
 #include <QGridLayout>
@@ -43,7 +44,11 @@ void ProfileWindow::setupUI()
     backBtn->setFixedSize(36, 36);
 
     backBtn->setCursor(Qt::PointingHandCursor);
-    connect(backBtn, &QPushButton::clicked, this, [this]() { this->close(); });
+    connect(backBtn, &QPushButton::clicked, this, [this]() {
+        DashboardWindow* dashboard = new DashboardWindow(m_user, nullptr);
+        dashboard->show();
+        this->close();
+    });
     topRow->addWidget(backBtn);
     topRow->addStretch();
 

@@ -93,7 +93,7 @@ void TransactionWindow::setupUI()
     m_amountInput->setPlaceholderText("0.00");
     m_amountInput->setFixedHeight(48);
 
-    //Adding widgets to our Row
+    //Adding to our Row
     amountRow->addWidget(RupeesSign);
     amountRow->addWidget(m_amountInput);
 

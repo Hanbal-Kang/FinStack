@@ -9,13 +9,14 @@ int main(int argc, char *argv[])
     app.setApplicationName("FinStack");
 
     QFile styleFile(":/styles/app.qss");
-    if (styleFile.open(QFile::ReadOnly)) {
+    if (styleFile.open(QFile::ReadOnly))
+    {
         app.setStyleSheet(styleFile.readAll());
         styleFile.close();
     }
 
-    AppController controller;
-    controller.start();
+    LoginWindow window;
+    window.show();
 
     return app.exec();
 }

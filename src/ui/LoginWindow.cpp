@@ -6,10 +6,10 @@
 #include <QSpacerItem>
 #include <ui/DashboardWindow.h>
 
-LoginWindow::LoginWindow(QWidget* parent) : BaseWindow(parent)
+LoginWindow::LoginWindow(QWidget* parent):BaseWindow(parent)
 {
     setWindowTitle("FinStack");
-    setMinimumSize(900, 600);
+    setMinimumSize(900,600);
 
     QScreen* screen = QApplication::primaryScreen();
     QRect screenRect = screen->availableGeometry();
@@ -19,7 +19,6 @@ LoginWindow::LoginWindow(QWidget* parent) : BaseWindow(parent)
 
     initialize();
 }
-
 void LoginWindow::setupUI()
 {
     QWidget* central = new QWidget(this);
@@ -57,6 +56,7 @@ void LoginWindow::setupLeftPanel()
     QHBoxLayout* logoRow = new QHBoxLayout();
     logoRow->setSpacing(12);
 
+    // Logo icon — stacked bars widget
     QWidget* iconWidget = new QWidget();
     iconWidget->setFixedSize(44, 44);
     iconWidget->setObjectName("logoIcon");
@@ -65,9 +65,21 @@ void LoginWindow::setupLeftPanel()
     barsLayout->setContentsMargins(10, 10, 10, 10);
     barsLayout->setSpacing(4);
 
-    QLabel* bar1 = new QLabel(); bar1->setMaximumWidth(14); bar1->setFixedHeight(5); bar1->setObjectName("barLight");
-    QLabel* bar2 = new QLabel(); bar2->setMaximumWidth(20); bar2->setFixedHeight(5); bar2->setObjectName("barMid");
-    QLabel* bar3 = new QLabel(); bar3->setMaximumWidth(26); bar3->setFixedHeight(5); bar3->setObjectName("barDark");
+    QLabel* bar1 = new QLabel();
+    QLabel* bar2 = new QLabel();
+    QLabel* bar3 = new QLabel();
+
+    bar1->setMaximumWidth(14);
+    bar2->setMaximumWidth(20);
+    bar3->setMaximumWidth(26);
+
+    bar1->setFixedHeight(5);
+    bar2->setFixedHeight(5);
+    bar3->setFixedHeight(5);
+
+    bar1->setObjectName("barLight");
+    bar2->setObjectName("barMid");
+    bar3->setObjectName("barDark");
 
     barsLayout->addStretch();
     barsLayout->addWidget(bar1);
@@ -91,12 +103,21 @@ void LoginWindow::setupLeftPanel()
 
     layout->addWidget(line1);
     layout->addWidget(line2);
+
     layout->addSpacing(24);
 
     QHBoxLayout* dotsRow = new QHBoxLayout();
-    QLabel* dot1 = new QLabel(); dot1->setFixedSize(8, 8); dot1->setObjectName("dotActive");
-    QLabel* dot2 = new QLabel(); dot2->setFixedSize(8, 8); dot2->setObjectName("dotInactive");
-    QLabel* dot3 = new QLabel(); dot3->setFixedSize(8, 8); dot3->setObjectName("dotInactive");
+    QLabel* dot1 = new QLabel();
+    QLabel* dot2 = new QLabel();
+    QLabel* dot3 = new QLabel();
+
+    dot1->setFixedSize(8, 8);
+    dot2->setFixedSize(8, 8);
+    dot3->setFixedSize(8, 8);
+
+    dot1->setObjectName("dotActive");
+    dot2->setObjectName("dotInactive");
+    dot3->setObjectName("dotInactive");
 
     dotsRow->addWidget(dot1);
     dotsRow->addWidget(dot2);
@@ -199,24 +220,26 @@ void LoginWindow::setupRightPanel()
     layout->addLayout(registerRow);
     layout->addStretch(2);
 
-    connect(m_loginButton,    &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
-    connect(m_registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);
-    connect(m_forgotPassword, &QPushButton::clicked, this, &LoginWindow::onForgotPasswordClicked);
+    connect(m_loginButton,    &QPushButton::clicked,
+            this, &LoginWindow::onLoginClicked);
+    connect(m_registerButton, &QPushButton::clicked,
+            this, &LoginWindow::onRegisterClicked);
+    connect(m_forgotPassword, &QPushButton::clicked,
+            this, &LoginWindow::onForgotPasswordClicked);
 }
 
-// =============================================================================
-//  Slots
-// =============================================================================
 void LoginWindow::onLoginClicked()
 {
     QString username = m_usernameInput->text().trimmed();
     QString password = m_passwordInput->text();
 
-    if (username.isEmpty() || password.isEmpty()) {
+    if (username.isEmpty() || password.isEmpty())
+    {
         m_errorLabel->setText("Please fill in all fields");
         m_errorLabel->show();
         return;
     }
+
     m_errorLabel->hide();
 
     // Tester Just to test the functionality of Dashboard (Hardcoded)
@@ -239,5 +262,6 @@ void LoginWindow::onRegisterClicked()
 
 void LoginWindow::onForgotPasswordClicked()
 {
-    // TODO
+    // TODO: open ForgotPasswordWindow
 }
+

@@ -271,30 +271,25 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
                           };
 
     for (const auto& d : defs) {
-        // Use a real QPushButton so clicks work reliably — style it to look
-        // like a card using QSS (objectName "quickBtn")
-        QPushButton* btn = new QPushButton();
+        QFrame* btn = new QFrame();
         btn->setObjectName("quickBtn");
         btn->setCursor(Qt::PointingHandCursor);
         btn->setMinimumHeight(80);
         btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-        // Stack icon + label vertically inside the button using a layout
         QVBoxLayout* vl = new QVBoxLayout(btn);
         vl->setContentsMargins(8, 12, 8, 12);
         vl->setSpacing(6);
         vl->setAlignment(Qt::AlignHCenter);
 
-        QLabel* iconLbl = new QLabel(d.icon);
+        QLabel* iconLbl = new QLabel(d.icon, btn);
         iconLbl->setObjectName("quickIcon");
         iconLbl->setAlignment(Qt::AlignCenter);
-        iconLbl->setStyleSheet(QString("color: %1; background: transparent;").arg(d.color));
-        iconLbl->setAttribute(Qt::WA_TransparentForMouseEvents);
+        iconLbl->setStyleSheet(QString("color: %1;").arg(d.color));
 
-        QLabel* label = new QLabel(d.label);
+        QLabel* label = new QLabel(d.label, btn);
         label->setObjectName("quickLabel");
         label->setAlignment(Qt::AlignCenter);
-        label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         vl->addWidget(iconLbl);
         vl->addWidget(label);

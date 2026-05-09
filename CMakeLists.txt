@@ -18,10 +18,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(PROJECT_SOURCES
     src/main.cpp
 
-    # App controller (navigation hub)
-    src/AppController.cpp
-    include/AppController.h
-
     # UI layer
     src/ui/BaseWindow.cpp
     src/ui/LoginWindow.cpp
@@ -95,6 +91,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FinStack
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        include/ui/TransactionHistory.h
         include/ui/DepositWindow.h
         include/ui/WithdrawWindow.h
     )

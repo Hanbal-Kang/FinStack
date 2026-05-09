@@ -194,12 +194,12 @@ QLabel#cardDot_income  { background-color: #3fb950; border-radius: 4px; }
 QLabel#cardDot_expense { background-color: #f85149; border-radius: 4px; }
 
 /* Quick-action tiles */
-QPushButton#quickBtn {
+QFrame#quickBtn {
     background-color: #161b22;
     border: 1px solid #21262d;
     border-radius: 12px;
 }
-QPushButton#quickBtn:hover {
+QFrame#quickBtn:hover {
     background-color: #1c2128;
     border-color: #30363d;
 }
@@ -595,4 +595,3 @@ QPushButton#txConfirmBtn {
 QPushButton#txConfirmBtn:hover {
     background-color: #16a34a;
 }
-

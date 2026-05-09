@@ -91,6 +91,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         include/ui/TransactionHistory.h
         src/ui/TransactionHistory.cpp
+        include/services/GoalService.h
     )
 else()
     if(ANDROID)

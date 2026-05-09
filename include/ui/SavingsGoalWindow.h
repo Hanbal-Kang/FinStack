@@ -13,9 +13,7 @@
 #include <QDialog>
 #include <vector>
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  AddGoalDialog
-// ─────────────────────────────────────────────────────────────────────────────
+//goal dialogue
 class AddGoalDialog : public QDialog
 {
     Q_OBJECT
@@ -38,9 +36,7 @@ private slots:
     void onConfirmClicked();
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  SavingsGoalWindow  (was incorrectly named GoalsWindow)
-// ─────────────────────────────────────────────────────────────────────────────
+
 class SavingsGoalWindow : public BaseWindow
 {
     Q_OBJECT

@@ -2,6 +2,7 @@
 #include "ui/RegisterWindow.h"
 #include "services/AuthService.h"
 #include "utils/Validator.h"
+#include "services/RecurringTransactionService.h"
 #include <QApplication>
 #include <QScreen>
 #include <QSizePolicy>
@@ -256,7 +257,10 @@ void LoginWindow::onLoginClicked()
 
     m_errorLabel->hide();
 
-    //3. Hand the real User off to Dashboard.
+   //So when the user logs in, it will instantly fire, and user will see fresh data in dashboard with transactions deducted
+    RecurringTransactionService recSvc;
+    recSvc.processDueRecurrences(user.get_id());
+
     DashboardWindow* dashboard = new DashboardWindow(user, nullptr);
     dashboard->show();
     this->close();

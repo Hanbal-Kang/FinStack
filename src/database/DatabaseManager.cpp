@@ -122,6 +122,20 @@ bool DatabaseManager::initSchema()
         ")"
         );
 
+    // goals table — for SavingsGoalWindow
+    ok &= execute(
+        "CREATE TABLE IF NOT EXISTS goals ("
+        "  id            INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "  user_id       INTEGER NOT NULL,"
+        "  description   TEXT NOT NULL,"
+        "  target_amount REAL NOT NULL,"
+        "  saved_amount  REAL NOT NULL DEFAULT 0,"
+        "  deadline      TEXT NOT NULL,"
+        "  created_at    TEXT NOT NULL,"
+        "  FOREIGN KEY(user_id) REFERENCES users(id)"
+        ")"
+        );
+
     return ok;
 }
 

@@ -93,7 +93,7 @@ Built as an OOP semester project by:
 - **Hanbal Aziz Kang** 
 - **Ahmad Nasir** 
 - **Abdullah Hussain** 
-- **Maryam**
+- **Maryam Waseem**
 
 ## License
 

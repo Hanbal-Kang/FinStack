@@ -201,11 +201,6 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     layout->setContentsMargins(20, 0, 20, 0);
     layout->setSpacing(12);
 
-    QPushButton* backBtn = new QPushButton("←", parent);
-    backBtn->setObjectName("navIconBtn");
-    backBtn->setFixedSize(36, 36);
-    backBtn->setCursor(Qt::PointingHandCursor);
-    layout->addWidget(backBtn);
 
     QHBoxLayout* logoRow = new QHBoxLayout();
     logoRow->setSpacing(12);
@@ -248,8 +243,6 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     layout->addWidget(avatarBtn);
 
     connect(avatarBtn, &QPushButton::clicked, this, &DashboardWindow::onProfileClicked);
-
-    connect(backBtn, &QPushButton::clicked, this, &DashboardWindow::logoutRequested);
 }
 
 void DashboardWindow::buildHeroCard(QVBoxLayout* layout)

@@ -1,6 +1,7 @@
 #include "ui/TransactionWindow.h"
 #include "utils/Validator.h"
 #include "models/Transaction.h"
+#include "services/TransactionService.h"
 #include "database/DatabaseManager.h"
 #include <QSqlQuery>
 #include <QApplication>
@@ -226,6 +227,13 @@ void TransactionWindow::onConfirmClicked()
     t.set_category(m_categoryCombo->currentText());
     t.set_description(m_descripInput->toPlainText().trimmed());
     t.set_transac_date(QDateTime(m_dateEdit->date(), QTime::currentTime()));
+
+    TransactionService svc;
+    if (!svc.addTransaction(t)) {
+        errorLabel->setText("Failed to save transaction");
+        errorLabel->show();
+        return;
+    }
 
     emit transaction_confirmed(t);
     close();

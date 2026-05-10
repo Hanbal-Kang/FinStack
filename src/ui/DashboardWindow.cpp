@@ -125,8 +125,6 @@ void DashboardWindow::onWithdrawClicked()
     // refresh Dashboard so the new row + updated totals appear immediately.
     connect(w, &TransactionWindow::transaction_confirmed, this,
             [this](const Transaction& t) {
-                TransactionService svc;
-                if (svc.addTransaction(t))
                     refreshDashboard();
             });
 
@@ -139,8 +137,6 @@ void DashboardWindow::onDepositClicked()
 
     connect(w, &TransactionWindow::transaction_confirmed, this,
             [this](const Transaction& t) {
-                TransactionService svc;
-                if (svc.addTransaction(t))
                     refreshDashboard();
             });
 

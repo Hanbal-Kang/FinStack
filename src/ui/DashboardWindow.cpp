@@ -6,6 +6,7 @@
 #include "services/TransactionService.h"
 #include "services/BudgetService.h"
 #include "ui/SavingsGoalWindow.h"
+#include "ui/AnalyticsWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -161,7 +162,13 @@ void DashboardWindow::onSavingsGoalsClicked()
     this->close();
 }
 
-void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
+//CHANGE : HANBAL
+void DashboardWindow::onAnalyticsClicked()
+{
+    AnalyticsWindow* analytics = new AnalyticsWindow(m_user, nullptr);
+    analytics->show();
+    this->close();
+}
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
 void DashboardWindow::onProfileClicked()
 {

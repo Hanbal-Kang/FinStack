@@ -1,5 +1,7 @@
 #include "ui/AnalyticsWindow.h"
 #include "services/TransactionService.h"
+#include "ui/DashboardWindow.h"
+#include <algorithm>
 #include <QDate>
 #include <QStyle>
 #include <QVBoxLayout>
@@ -290,10 +292,10 @@ void AnalyticsWindow::updateBreakdownPanel()
     for (auto it = cats.cbegin(); it != cats.cend(); ++it)
         list.append(qMakePair(it.key(), it.value()));
 
-    for (int i = 0; i < list.size() - 1; ++i)
-        for (int j = 0; j < list.size() - i - 1; ++j)
-            if (list[j].second < list[j + 1].second)
-                qSwap(list[j], list[j + 1]);
+    std::sort(list.begin(), list.end(),
+              [](const QPair<QString,double>& a, const QPair<QString,double>& b) {
+                  return a.second > b.second;   // descending
+              });
 
     for (int i = 0; i < list.size(); ++i)
     {
@@ -357,9 +359,11 @@ void AnalyticsWindow::onWeekClicked()  { setPeriod("This Week");  }
 void AnalyticsWindow::onMonthClicked() { setPeriod("This Month"); }
 void AnalyticsWindow::onYearClicked()  { setPeriod("This Year");  }
 
+//Change : HANBAL
 void AnalyticsWindow::onBackClicked()
 {
-    emit backToDashboard();
+    DashboardWindow* dashboard = new DashboardWindow(m_user, nullptr);
+    dashboard->show();
     close();
 }
 

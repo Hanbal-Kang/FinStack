@@ -4,7 +4,6 @@
 BaseWindow::BaseWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
     setMinimumSize(900, 600);
     setWindowTitle("FinStack");
 }

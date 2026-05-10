@@ -49,7 +49,7 @@ std::vector<Transaction> TransactionService::getByType(int userId, Transaction::
     QString typeStr = (type == Transaction::Income) ? "income" : "expense";
 
     QSqlQuery q = DatabaseManager::instance().prepare(
-        "SELECT id, account_id, category, type, amount, description, transaction_date "
+        "SELECT id, account_id, category_id, type, amount, description, transaction_date "
         "FROM transactions "
         "WHERE account_id IN (SELECT id FROM accounts WHERE user_id = ?) AND type = ?"
         );

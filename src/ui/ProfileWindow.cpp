@@ -2,6 +2,9 @@
 #include "ui/LoginWindow.h"
 #include "ui/DashboardWindow.h"
 #include "utils/Formatter.h"
+#include "services/ReportService.h"
+#include <QFileDialog>
+#include <QStandardPaths>
 #include <QScrollArea>
 #include <QGridLayout>
 #include <QMessageBox>
@@ -169,6 +172,37 @@ void ProfileWindow::setupUI()
 
     pageLayout->addWidget(securityCard);
 
+    //Reports Card | Our financial Report Button
+    QFrame* reportsCard = new QFrame();
+    reportsCard->setObjectName("budgetSummaryCard");
+
+    QHBoxLayout* repRow = new QHBoxLayout(reportsCard);
+    repRow->setContentsMargins(28, 22, 28, 22);
+    repRow->setSpacing(16);
+
+    QVBoxLayout* repTextCol = new QVBoxLayout();
+    repTextCol->setSpacing(4);
+
+    QLabel* repTitle = new QLabel("Financial Report");
+    repTitle->setObjectName("cardTitle");
+    QLabel* repSub = new QLabel("Export all your transactions, budgets, and goals as a CSV file");
+    repSub->setObjectName("pageSubtitle");
+
+    repTextCol->addWidget(repTitle);
+    repTextCol->addWidget(repSub);
+
+    QPushButton* exportBtn = new QPushButton("📊  Request Report");
+    exportBtn->setObjectName("primaryBtn");
+    exportBtn->setCursor(Qt::PointingHandCursor);
+    exportBtn->setFixedHeight(40);
+    connect(exportBtn, &QPushButton::clicked, this, &ProfileWindow::onExportReportClicked);
+
+    repRow->addLayout(repTextCol);
+    repRow->addStretch();
+    repRow->addWidget(exportBtn);
+
+    pageLayout->addWidget(reportsCard);
+
     //Sign Out Card (same flat layout as Security)
     QFrame* logoutCard = new QFrame();
     logoutCard->setObjectName("budgetSummaryCard");
@@ -246,6 +280,34 @@ void ProfileWindow::onChangePasswordClicked()
 {
     QMessageBox::information(this, "Change Password",
                              "Password change flow is coming soon.");
+}
+
+void ProfileWindow::onExportReportClicked()
+{
+    // Default to Desktop with a sensible filename including today's date
+    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString defaultName = QString("FinStack_Report_%1_%2.csv")
+                              .arg(m_user.get_username().isEmpty() ? "user" : m_user.get_username())
+                              .arg(QDate::currentDate().toString("yyyy-MM-dd"));
+    QString defaultPath = defaultDir + "/" + defaultName;
+
+    // Native Save dialog — user can change folder/name
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        "Save Financial Report",
+        defaultPath,
+        "CSV Files (*.csv)"
+        );
+    if (filePath.isEmpty()) return;   // user cancelled
+
+    ReportService svc;
+    if (svc.exportTransactionsCSV(m_user.get_id(), filePath)) {
+        QMessageBox::information(this, "Report Exported",
+                                 "Your report was saved successfully.\n\n" + filePath);
+    } else {
+        QMessageBox::warning(this, "Export Failed",
+                             "Could not save the report. Please try a different location.");
+    }
 }
 
 void ProfileWindow::onLogoutClicked()

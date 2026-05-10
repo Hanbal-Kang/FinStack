@@ -25,4 +25,5 @@ private:
 private slots:
     void onChangePasswordClicked();
     void onLogoutClicked();
+    void onExportReportClicked();
 };

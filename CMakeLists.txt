@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
     src/services/BudgetService.cpp
     src/services/AnalyticsService.cpp
     src/services/ReportService.cpp
+    src/services/GoalService.cpp
 
     # Models
     src/models/User.cpp

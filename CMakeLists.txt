@@ -74,6 +74,7 @@ set(PROJECT_SOURCES
     include/services/BudgetService.h
     include/services/AnalyticsService.h
     include/services/ReportService.h
+    include/services/RecurringTransactionService.h
 
     include/models/User.h
     include/models/Transaction.h

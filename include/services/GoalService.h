@@ -8,4 +8,6 @@ public:
     std::vector<SavingsGoal> getGoalsForUser(int userId);
     bool deleteGoal(int goalId);
     bool updateGoalProgress(int goalId, double amount);
+    //CHANGE : HANBAL | so we can contribute money to pur set goal
+    bool contributeToGoal(int goalId, double amount);
 };

@@ -189,19 +189,26 @@ void AnalyticsWindow::loadTransactions()
 
     QDate today = QDate::currentDate();
     QDate startDate;
+    QDate endDate = today;
 
-    if (m_currentPeriod == "This Week")
-        startDate = today.addDays(-7);
-    else if (m_currentPeriod == "This Year")
-        startDate = today.addDays(-365);
-    else
-        startDate = today.addDays(-30);
+    if (m_currentPeriod == "This Week") {
+        // Monday of the current week. Qt: dayOfWeek() returns 1=Mon..7=Sun
+        startDate = today.addDays(-(today.dayOfWeek() - 1));
+    }
+    else if (m_currentPeriod == "This Year") {
+        // Jan 1 of the current year
+        startDate = QDate(today.year(), 1, 1);
+    }
+    else {
+        // "This Month" — first day of the current month
+        startDate = QDate(today.year(), today.month(), 1);
+    }
 
     m_transactions.clear();
     for (const auto& tx : all)
     {
         QDate txDate = tx.get_transac_date().date();
-        if (txDate >= startDate && txDate <= today)
+        if (txDate >= startDate && txDate <= endDate)
             m_transactions.push_back(tx);
     }
 }
@@ -253,12 +260,19 @@ void AnalyticsWindow::updateSummaryCards()
     }
     m_highestCatLabel->setText(highestCat);
 
-    // daily average based on period
-    int days = (m_currentPeriod == "This Week") ? 7
-               : (m_currentPeriod == "This Year") ? 365 : 30;
+    // Days elapsed in the current period (up to today, not the full period length)
+    QDate today = QDate::currentDate();
+    QDate startDate;
 
+    if (m_currentPeriod == "This Week")
+        startDate = today.addDays(-(today.dayOfWeek() - 1));
+    else if (m_currentPeriod == "This Year")
+        startDate = QDate(today.year(), 1, 1);
+    else
+        startDate = QDate(today.year(), today.month(), 1);
+
+    int days = startDate.daysTo(today) + 1;   // +1 so today counts
     double avg = (days > 0) ? total / days : 0.0;
-    m_dailyAvgLabel->setText("Rs " + QString::number(avg, 'f', 0));
 }
 
 void AnalyticsWindow::updatePieChart()

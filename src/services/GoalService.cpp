@@ -11,7 +11,7 @@ bool GoalService::createGoal(const SavingsGoal& goal) {
     q.addBindValue(goal.get_user_id());
     q.addBindValue(goal.get_description());
     q.addBindValue(goal.get_target_amount());
-    q.addBindValue(goal.get_deadline());
+    q.addBindValue(goal.get_deadline().toString(Qt::ISODate));
     q.addBindValue(goal.get_saved_amount());
 
     return DatabaseManager::instance().executePrepared(q);
@@ -32,7 +32,7 @@ std::vector<SavingsGoal> GoalService::getGoalsForUser(int userId) {
             g.set_user_id(q.value(1).toInt());
             g.set_description(q.value(2).toString());
             g.set_target_amount(q.value(3).toDouble());
-            g.set_deadline(q.value(4).toDateTime());
+            g.set_deadline(QDateTime::fromString(q.value(4).toString(), Qt::ISODate));
             g.set_saved_amount(q.value(5).toDouble());
             goals.push_back(g);
         }

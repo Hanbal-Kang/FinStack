@@ -95,6 +95,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         include/ui/TransactionHistory.h
         include/ui/DepositWindow.h
         include/ui/WithdrawWindow.h
+
     )
 else()
     if(ANDROID)

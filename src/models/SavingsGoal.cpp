@@ -6,6 +6,7 @@ SavingsGoal::SavingsGoal()
     user_id = 0;
 
     target_amount = 0.0;
+    saved_amount = 0.0;
 
     //#for    QDateTime deadline
     //Deadline does not need to be intialized here. QDateTime automatically sets it to invalid
@@ -27,6 +28,11 @@ int SavingsGoal::get_user_id() const
 double SavingsGoal::get_target_amount() const
 {
     return this->target_amount;
+}
+
+double SavingsGoal::get_saved_amount() const
+{
+    return this->saved_amount;
 }
 
 QDateTime SavingsGoal::get_deadline() const
@@ -53,6 +59,11 @@ void SavingsGoal::set_user_id(int id)
 void SavingsGoal::set_target_amount(double amount)
 {
     this->target_amount = amount;
+}
+
+void SavingsGoal::set_saved_amount(double amount)
+{
+    this->saved_amount = amount;
 }
 
 void SavingsGoal::set_deadline(const QDateTime& deadline)

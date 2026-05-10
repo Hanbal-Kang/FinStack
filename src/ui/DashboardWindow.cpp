@@ -8,6 +8,8 @@
 #include "ui/SavingsGoalWindow.h"
 #include "ui/AnalyticsWindow.h"
 #include "ui/TransactionHistory.h"
+#include "services/GoalService.h"
+#include "models/SavingsGoal.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -550,10 +552,6 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category, double spent, d
 // =============================================================================
 void DashboardWindow::loadData()
 {
-    //CHANGE : HANBAL
-    // Pull this user's transactions and budgets from the DB via the service layer.
-    // The services return std::vector — QList's range constructor wraps the
-    // begin/end iterators, so we get a clean QList<T> without copying twice.
     TransactionService txSvc;
     std::vector<Transaction> txs = txSvc.getAllByUser(m_user.get_id());
     m_transactions = QList<Transaction>(txs.begin(), txs.end());
@@ -561,14 +559,28 @@ void DashboardWindow::loadData()
     BudgetService budSvc;
     std::vector<Budget> bgs = budSvc.getUserBudgets(m_user.get_id());
     m_budgets = QList<Budget>(bgs.begin(), bgs.end());
+
+    GoalService goalSvc;
+    std::vector<SavingsGoal> gs = goalSvc.getGoalsForUser(m_user.get_id());
+    m_goals = QList<SavingsGoal>(gs.begin(), gs.end());
 }
 
+//Spendable balance: income − expenses − money locked in active goals
 double DashboardWindow::totalBalance() const
 {
-    double bal = 0.0;
-    for (const auto& tx : m_transactions)
-        bal += (tx.get_type() == Transaction::Income) ? tx.get_amount() : -tx.get_amount();
-    return bal;
+    double total = 0.0;
+    for (const auto& tx : m_transactions) {
+        if (tx.get_type() == Transaction::Income)
+            total += tx.get_amount();
+        else
+            total -= tx.get_amount();
+    }
+
+    // Subtract money locked in goals
+    for (const auto& g : m_goals)
+        total -= g.get_saved_amount();
+
+    return total;
 }
 
 double DashboardWindow::monthlyIncome() const

@@ -526,27 +526,33 @@ QString SavingsGoalWindow::goalEmoji(const QString& description) const
 // =============================================================================
 void SavingsGoalWindow::loadGoals()
 {
-    m_balance = computeBalance();
-    if (m_balanceLabel)
-        m_balanceLabel->setText("Rs " + QString::number(m_balance, 'f', 0));
-
     GoalService service;
     m_goals = service.getGoalsForUser(m_user.get_id());
+
+    m_balance = computeBalance();   // now uses fresh m_goals
+    if (m_balanceLabel)
+        m_balanceLabel->setText("Rs " + QString::number(m_balance, 'f', 0));
 }
 
+// Spendable balance: income − expenses − everything currently locked in goals.
 double SavingsGoalWindow::computeBalance()
 {
-    TransactionService service;
-    std::vector<Transaction> all = service.getAllByUser(m_user.get_id());
+    TransactionService txSvc;
+    std::vector<Transaction> all = txSvc.getAllByUser(m_user.get_id());
 
-    double currentBalance = 0.0;
+    double balance = 0.0;
     for (const auto& tx : all) {
         if (tx.get_type() == Transaction::Income)
-            currentBalance += tx.get_amount();
+            balance += tx.get_amount();
         else
-            currentBalance -= tx.get_amount();
+            balance -= tx.get_amount();
     }
-    return currentBalance;
+
+    // Subtract locked goal money. m_goals was just populated by loadGoals().
+    for (const auto& g : m_goals)
+        balance -= g.get_saved_amount();
+
+    return balance;
 }
 
 void SavingsGoalWindow::refreshGoalCards()

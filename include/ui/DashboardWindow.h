@@ -1,5 +1,5 @@
 #pragma once
-
+#include "models/SavingsGoal.h"
 #include "ui/BaseWindow.h"
 #include "models/User.h"
 #include "models/Transaction.h"
@@ -68,6 +68,7 @@ private:
     User               m_user;
     QList<Transaction> m_transactions;
     QList<Budget>      m_budgets;
+    QList<SavingsGoal> m_goals;
 
     QLabel*      m_balanceLabel  = nullptr;
     QLabel*      m_incomeLabel   = nullptr;

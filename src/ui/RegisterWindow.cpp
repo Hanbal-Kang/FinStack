@@ -2,6 +2,7 @@
 #include "ui/LoginWindow.h"
 #include "services/AuthService.h"
 #include "utils/Validator.h"
+#include "ui/RecoveryCodeDialog.h"
 #include <QApplication>
 #include <QScreen>
 
@@ -264,7 +265,6 @@ void RegisterWindow::onRegisterClicked()
     //6. Hand off to AuthService — inserts hashed password into the DB
     AuthService auth;
     if (!auth.registerUser(username, password, email)) {
-        //Most common cause: username already exists (UNIQUE constraint)
         m_errorLabel->setText("Could not create account. Username may already be taken.");
         m_errorLabel->show();
         return;
@@ -272,7 +272,13 @@ void RegisterWindow::onRegisterClicked()
 
     m_errorLabel->hide();
 
-    //Success — go back to LoginWindow so the user can sign in
+    //Generate recovery code and show it to the user. They must acknowledge before continuing — exec() blocks until they click "I've Saved It".
+    QString recoveryCode = auth.generateRecoveryCode(username);
+    if (!recoveryCode.isEmpty()) {
+        RecoveryCodeDialog dialog(recoveryCode, this);
+        dialog.exec();
+    }
+
     LoginWindow* login = new LoginWindow(nullptr);
     login->show();
     this->close();

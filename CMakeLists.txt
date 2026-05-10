@@ -40,7 +40,7 @@ set(PROJECT_SOURCES
     src/services/AnalyticsService.cpp
     src/services/ReportService.cpp
     src/services/GoalService.cpp
-    RecurringTransactionService.cpp
+    src/services/RecurringTransactionService.cpp
 
     # Models
     src/models/User.cpp

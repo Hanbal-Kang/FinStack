@@ -2,6 +2,7 @@
 #include "ui/RegisterWindow.h"
 #include "services/AuthService.h"
 #include "utils/Validator.h"
+#include "ui/ForgotPassword.h"
 #include "services/RecurringTransactionService.h"
 #include <QApplication>
 #include <QScreen>
@@ -185,7 +186,27 @@ void LoginWindow::setupRightPanel()
     layout->addLayout(passLabelRow);
     layout->addSpacing(6);
     layout->addWidget(m_passwordInput);
-    layout->addSpacing(28);
+
+    //Forgot pass
+    QHBoxLayout* forgotRow = new QHBoxLayout();
+    forgotRow->addStretch();
+    QPushButton* forgotBtn = new QPushButton("Forgot password?");
+    forgotBtn->setObjectName("linkBtn");
+    forgotBtn->setCursor(Qt::PointingHandCursor);
+    forgotBtn->setFlat(true);
+    forgotBtn->setStyleSheet(
+        "QPushButton { background: transparent; color: #58a6ff; "
+        "border: none; padding: 4px 8px; font-size: 13px; }"
+        "QPushButton:hover { color: #79b8ff; text-decoration: underline; }"
+        );
+    connect(forgotBtn, &QPushButton::clicked, this, [this]() {
+        ForgotPasswordWindow* fp = new ForgotPasswordWindow(nullptr);
+        fp->show();
+        this->close();
+    });
+    forgotRow->addWidget(forgotBtn);
+    layout->addLayout(forgotRow);
+    layout->addSpacing(20);
 
     m_errorLabel = new QLabel("");
     m_errorLabel->setObjectName("errorLabel");

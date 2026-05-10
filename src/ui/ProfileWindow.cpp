@@ -9,6 +9,131 @@
 #include <QGridLayout>
 #include <QMessageBox>
 
+//ChangePasswordDialog
+
+ChangePasswordDialog::ChangePasswordDialog(const QString& username, QWidget* parent)
+    : QDialog(parent), m_username(username)
+{
+    setWindowTitle("Change Password");
+    setModal(true);
+    setMinimumWidth(420);
+    setupUI();
+}
+
+void ChangePasswordDialog::setupUI()
+{
+    QVBoxLayout* root = new QVBoxLayout(this);
+    root->setContentsMargins(28, 24, 28, 24);
+    root->setSpacing(14);
+
+    QLabel* title = new QLabel("Change Password");
+    title->setObjectName("cardTitle");
+    root->addWidget(title);
+
+    QLabel* sub = new QLabel("Enter your current password and pick a new one.");
+    sub->setObjectName("pageSubtitle");
+    root->addWidget(sub);
+
+    // Current pass
+    QLabel* oldLbl = new QLabel("Current Password");
+    oldLbl->setObjectName("inputLabel");
+    m_oldPwInput = new QLineEdit();
+    m_oldPwInput->setEchoMode(QLineEdit::Password);
+    m_oldPwInput->setPlaceholderText("Enter current password");
+    m_oldPwInput->setFixedHeight(40);
+    m_oldPwInput->setObjectName("inputField");
+    root->addWidget(oldLbl);
+    root->addWidget(m_oldPwInput);
+
+    //New pass
+    QLabel* newLbl = new QLabel("New Password");
+    newLbl->setObjectName("inputLabel");
+    m_newPwInput = new QLineEdit();
+    m_newPwInput->setEchoMode(QLineEdit::Password);
+    m_newPwInput->setPlaceholderText("8+ chars, uppercase, digit, symbol");
+    m_newPwInput->setFixedHeight(40);
+    m_newPwInput->setObjectName("inputField");
+    root->addWidget(newLbl);
+    root->addWidget(m_newPwInput);
+
+    //Confirm new pass
+    QLabel* confLbl = new QLabel("Confirm New Password");
+    confLbl->setObjectName("inputLabel");
+    m_confirmInput = new QLineEdit();
+    m_confirmInput->setEchoMode(QLineEdit::Password);
+    m_confirmInput->setPlaceholderText("Re-enter new password");
+    m_confirmInput->setFixedHeight(40);
+    m_confirmInput->setObjectName("inputField");
+    root->addWidget(confLbl);
+    root->addWidget(m_confirmInput);
+
+    // Error
+    m_errorLabel = new QLabel();
+    m_errorLabel->setStyleSheet("color: #f85149;");
+    m_errorLabel->hide();
+    root->addWidget(m_errorLabel);
+
+    // Buttons
+    QHBoxLayout* btnRow = new QHBoxLayout();
+    btnRow->setSpacing(12);
+
+    QPushButton* cancelBtn = new QPushButton("Cancel");
+    cancelBtn->setObjectName("primaryBtn");
+    cancelBtn->setFixedHeight(40);
+    cancelBtn->setCursor(Qt::PointingHandCursor);
+    connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
+
+    QPushButton* okBtn = new QPushButton("Update Password");
+    okBtn->setObjectName("primaryBtn");
+    okBtn->setFixedHeight(40);
+    okBtn->setCursor(Qt::PointingHandCursor);
+    okBtn->setDefault(true);
+    connect(okBtn, &QPushButton::clicked, this, &ChangePasswordDialog::onConfirmClicked);
+
+    btnRow->addStretch();
+    btnRow->addWidget(cancelBtn);
+    btnRow->addWidget(okBtn);
+    root->addLayout(btnRow);
+}
+
+void ChangePasswordDialog::onConfirmClicked()
+{
+    QString oldPw    = m_oldPwInput->text();
+    QString newPw    = m_newPwInput->text();
+    QString confirm  = m_confirmInput->text();
+
+    if (oldPw.isEmpty() || newPw.isEmpty() || confirm.isEmpty()) {
+        m_errorLabel->setText("Please fill in all fields");
+        m_errorLabel->show();
+        return;
+    }
+    if (newPw != confirm) {
+        m_errorLabel->setText("New passwords do not match");
+        m_errorLabel->show();
+        return;
+    }
+    if (newPw == oldPw) {
+        m_errorLabel->setText("New password must be different from current");
+        m_errorLabel->show();
+        return;
+    }
+    if (!Validator::isPasswordStrong(newPw)) {
+        m_errorLabel->setText("Password must be 8+ chars with uppercase, digit, and symbol");
+        m_errorLabel->show();
+        return;
+    }
+
+    AuthService auth;
+    if (!auth.changePassword(m_username, oldPw, newPw)) {
+        m_errorLabel->setText("Current password is incorrect");
+        m_errorLabel->show();
+        return;
+    }
+
+    accept();   //closes dialogs
+}
+
+
 ProfileWindow::ProfileWindow(const User& user, QWidget* parent) : BaseWindow(parent), m_user(user)
 {
     setWindowTitle("FinStack — Profile & Settings");
@@ -278,13 +403,16 @@ QFrame* ProfileWindow::buildInfoCard(const QString& iconSymbol, const QString& l
 
 void ProfileWindow::onChangePasswordClicked()
 {
-    QMessageBox::information(this, "Change Password",
-                             "Password change flow is coming soon.");
+    ChangePasswordDialog dialog(m_user.get_username(), this);
+    if (dialog.exec() != QDialog::Accepted) return;
+
+    QMessageBox::information(this, "Password Changed",
+                             "Your password was updated successfully.");
 }
 
 void ProfileWindow::onExportReportClicked()
 {
-    // Default to Desktop with a sensible filename including today's date
+    //Default to Desktop with a sensible filename including today's date
     QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString defaultName = QString("FinStack_Report_%1_%2.csv")
                               .arg(m_user.get_username().isEmpty() ? "user" : m_user.get_username())

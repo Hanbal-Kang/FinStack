@@ -121,6 +121,23 @@ bool DatabaseManager::initSchema()
         ")"
         );
 
+    // recurring_transactions table — for the Recurring Transactions feature.
+    ok &= execute(
+        "CREATE TABLE IF NOT EXISTS recurring_transactions ("
+        "  reccur_transac_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "  user_id           INTEGER NOT NULL,"
+        "  type              TEXT NOT NULL CHECK(type IN ('income','expense')),"
+        "  amount            REAL NOT NULL,"
+        "  category          TEXT NOT NULL,"
+        "  description       TEXT NOT NULL,"
+        "  interval          TEXT NOT NULL CHECK(interval IN ('daily','weekly','monthly')),"
+        "  start_date        TEXT NOT NULL,"
+        "  next_due          TEXT NOT NULL,"
+        "  is_active         INTEGER NOT NULL DEFAULT 1,"
+        "  FOREIGN KEY(user_id) REFERENCES users(id)"
+        ")"
+        );
+
     return ok;
 }
 

@@ -61,9 +61,9 @@ void BudgetWindow::refreshBudgets()
     double remaining = budget - spent;
     int    pct       = (budget > 0) ? qMin((int)((spent / budget) * 100), 100) : 0;
 
-    if (m_totalBudgetLabel) m_totalBudgetLabel->setText(QString("$%1").arg(budget,    0, 'f', 2));
-    if (m_totalSpentLabel)  m_totalSpentLabel ->setText(QString("$%1").arg(spent,     0, 'f', 2));
-    if (m_remainingLabel)   m_remainingLabel  ->setText(QString("$%1").arg(remaining, 0, 'f', 2));
+    if (m_totalBudgetLabel) m_totalBudgetLabel->setText(QString("Rs %1").arg(budget,    0, 'f', 2));
+    if (m_totalSpentLabel)  m_totalSpentLabel ->setText(QString("Rs %1").arg(spent,     0, 'f', 2));
+    if (m_remainingLabel)   m_remainingLabel  ->setText(QString("Rs %1").arg(remaining, 0, 'f', 2));
     if (m_overallBar)       m_overallBar->setValue(pct);
     if (m_overallPctLabel)  m_overallPctLabel->setText(QString("%1% of total budget used").arg(pct));
 
@@ -231,7 +231,7 @@ void BudgetWindow::buildSummaryCard(QVBoxLayout* root)
         col->setSpacing(6);
         QLabel* titleLbl = new QLabel(title);
         titleLbl->setObjectName("summaryColTitle");
-        valueLabel = new QLabel("$0.00");
+        valueLabel = new QLabel("Rs0.00");
         valueLabel->setObjectName(objName);
         col->addWidget(titleLbl);
         col->addWidget(valueLabel);
@@ -263,9 +263,9 @@ void BudgetWindow::buildSummaryCard(QVBoxLayout* root)
     double remaining = budget - spent;
     int    pct       = (budget > 0) ? qMin((int)((spent / budget) * 100), 100) : 0;
 
-    m_totalBudgetLabel->setText(QString("$%1").arg(budget,    0, 'f', 2));
-    m_totalSpentLabel ->setText(QString("$%1").arg(spent,     0, 'f', 2));
-    m_remainingLabel  ->setText(QString("$%1").arg(remaining, 0, 'f', 2));
+    m_totalBudgetLabel->setText(QString("Rs %1").arg(budget,    0, 'f', 2));
+    m_totalSpentLabel ->setText(QString("Rs %1").arg(spent,     0, 'f', 2));
+    m_remainingLabel  ->setText(QString("Rs %1").arg(remaining, 0, 'f', 2));
     m_overallBar->setValue(pct);
     m_overallPctLabel->setText(QString("%1% of total budget used").arg(pct));
 
@@ -351,12 +351,12 @@ QFrame* BudgetWindow::makeCategoryCard(int index, const QString& emoji, const QS
     limitCol->setSpacing(4);
 
     QLabel* limitLbl = new QLabel(
-        limit > 0 ? QString("$%1").arg(limit, 0, 'f', 2) : "Not set");
+        limit > 0 ? QString("Rs %1").arg(limit, 0, 'f', 2) : "Not set");
     limitLbl->setObjectName("budgetLimit");
 
     double remaining = limit - spent;
     QLabel* spentLbl = new QLabel(
-        QString("$%1 spent  •  $%2 left")
+        QString("Rs %1 spent  •  $%2 left")
             .arg(spent,     0, 'f', 0)
             .arg(qMax(remaining, 0.0), 0, 'f', 0));
     spentLbl->setObjectName("budgetSpentLeft");

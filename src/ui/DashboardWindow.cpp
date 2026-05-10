@@ -7,6 +7,7 @@
 #include "services/BudgetService.h"
 #include "ui/SavingsGoalWindow.h"
 #include "ui/AnalyticsWindow.h"
+#include "ui/TransactionHistory.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -72,11 +73,11 @@ void DashboardWindow::refreshDashboard()
     loadData();
 
     if (m_balanceLabel)
-        m_balanceLabel->setText(QString("$%1").arg(totalBalance(), 0, 'f', 2));
+        m_balanceLabel->setText(QString("Rs %1").arg(totalBalance(), 0, 'f', 2));
     if (m_incomeLabel)
-        m_incomeLabel->setText(QString("$%1").arg(monthlyIncome(), 0, 'f', 2));
+        m_incomeLabel->setText(QString("Rs %1").arg(monthlyIncome(), 0, 'f', 2));
     if (m_expenseLabel)
-        m_expenseLabel->setText(QString("$%1").arg(monthlyExpenses(), 0, 'f', 2));
+        m_expenseLabel->setText(QString("Rs %1").arg(monthlyExpenses(), 0, 'f', 2));
 
     if (m_txLayout) {
         while (m_txLayout->count() > 1) {
@@ -169,7 +170,12 @@ void DashboardWindow::onAnalyticsClicked()
     analytics->show();
     this->close();
 }
-void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
+void DashboardWindow::onHistoryClicked()
+{
+    TransactionHistoryWindow* history = new TransactionHistoryWindow(m_user, nullptr);
+    history->show();
+    this->close();
+}
 void DashboardWindow::onProfileClicked()
 {
 
@@ -250,7 +256,7 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     titleLbl->setObjectName("heroTitle");
     titleLbl->setAlignment(Qt::AlignCenter);
 
-    m_balanceLabel = new QLabel(QString("$%1").arg(totalBalance(), 0, 'f', 2), hero);
+    m_balanceLabel = new QLabel(QString("Rs %1").arg(totalBalance(), 0, 'f', 2), hero);
     m_balanceLabel->setObjectName("heroAmount");
     m_balanceLabel->setAlignment(Qt::AlignCenter);
 
@@ -271,7 +277,7 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     QLabel* incDot = new QLabel(incCard); incDot->setObjectName("cardDot_income"); incDot->setFixedSize(8, 8);
     QLabel* incTitle = new QLabel("Total Income", incCard); incTitle->setObjectName("cardTitle");
     incHeader->addWidget(incDot); incHeader->addWidget(incTitle); incHeader->addStretch();
-    m_incomeLabel = new QLabel(QString("$%1").arg(monthlyIncome(), 0, 'f', 2), incCard);
+    m_incomeLabel = new QLabel(QString("Rs %1").arg(monthlyIncome(), 0, 'f', 2), incCard);
     m_incomeLabel->setObjectName("cardValue");
     incLayout->addLayout(incHeader);
     incLayout->addWidget(m_incomeLabel);
@@ -284,7 +290,7 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     QLabel* expDot = new QLabel(expCard); expDot->setObjectName("cardDot_expense"); expDot->setFixedSize(8, 8);
     QLabel* expTitle = new QLabel("Total Expenses", expCard); expTitle->setObjectName("cardTitle");
     expHeader->addWidget(expDot); expHeader->addWidget(expTitle); expHeader->addStretch();
-    m_expenseLabel = new QLabel(QString("$%1").arg(monthlyExpenses(), 0, 'f', 2), expCard);
+    m_expenseLabel = new QLabel(QString("Rs %1").arg(monthlyExpenses(), 0, 'f', 2), expCard);
     m_expenseLabel->setObjectName("cardValue");
     expLayout->addLayout(expHeader);
     expLayout->addWidget(m_expenseLabel);
@@ -294,7 +300,7 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     QVBoxLayout* netLayout = new QVBoxLayout(netCard);
     netLayout->setContentsMargins(16, 12, 16, 12);
     QLabel* netTitle = new QLabel("Net Balance", netCard); netTitle->setObjectName("cardTitle");
-    QLabel* netValue = new QLabel(QString("$%1").arg(monthlyIncome() - monthlyExpenses(), 0, 'f', 2), netCard);
+    QLabel* netValue = new QLabel(QString("Rs %1").arg(monthlyIncome() - monthlyExpenses(), 0, 'f', 2), netCard);
     netValue->setObjectName("cardValue");
     netLayout->addWidget(netTitle);
     netLayout->addWidget(netValue);

@@ -33,6 +33,7 @@ set(PROJECT_SOURCES
     src/ui/TransactionHistory.cpp
     src/ui/RecurringTransactionWindow.cpp
     src/ui/RecoveryCodeDialog.cpp
+    src/ui/ForgotPassword.cpp
 
     # Services
 
@@ -71,6 +72,7 @@ set(PROJECT_SOURCES
     include/ui/ProfileWindow.h
     include/ui/RecurringTransactionWindow.h
     include/ui/RecoveryCodeDialog.h
+    include/ui/ForgotPassword.h
 
     include/services/BaseService.h
     include/services/AuthService.h

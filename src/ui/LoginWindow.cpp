@@ -90,11 +90,11 @@ void LoginWindow::setupLeftPanel()
     barsLayout->addWidget(bar2);
     barsLayout->addWidget(bar3);
 
-m_appName = new QLabel("FinStack");
-m_appName->setObjectName("appName");
+    m_appName = new QLabel("FinStack");
+    m_appName->setObjectName("appName");
 
-logoRow->addWidget(iconWidget);
-logoRow->addWidget(m_appName);
+    logoRow->addWidget(iconWidget);
+    logoRow->addWidget(m_appName);
     logoRow->addStretch();
 
     layout->addLayout(logoRow);
@@ -186,27 +186,7 @@ void LoginWindow::setupRightPanel()
     layout->addLayout(passLabelRow);
     layout->addSpacing(6);
     layout->addWidget(m_passwordInput);
-
-    //Forgot pass
-    QHBoxLayout* forgotRow = new QHBoxLayout();
-    forgotRow->addStretch();
-    QPushButton* forgotBtn = new QPushButton("Forgot password?");
-    forgotBtn->setObjectName("linkBtn");
-    forgotBtn->setCursor(Qt::PointingHandCursor);
-    forgotBtn->setFlat(true);
-    forgotBtn->setStyleSheet(
-        "QPushButton { background: transparent; color: #58a6ff; "
-        "border: none; padding: 4px 8px; font-size: 13px; }"
-        "QPushButton:hover { color: #79b8ff; text-decoration: underline; }"
-        );
-    connect(forgotBtn, &QPushButton::clicked, this, [this]() {
-        ForgotPasswordWindow* fp = new ForgotPasswordWindow(nullptr);
-        fp->show();
-        this->close();
-    });
-    forgotRow->addWidget(forgotBtn);
-    layout->addLayout(forgotRow);
-    layout->addSpacing(20);
+    layout->addSpacing(28);
 
     m_errorLabel = new QLabel("");
     m_errorLabel->setObjectName("errorLabel");
@@ -278,7 +258,7 @@ void LoginWindow::onLoginClicked()
 
     m_errorLabel->hide();
 
-   //So when the user logs in, it will instantly fire, and user will see fresh data in dashboard with transactions deducted
+    //So when the user logs in, it will instantly fire, and user will see fresh data in dashboard with transactions deducted
     RecurringTransactionService recSvc;
     recSvc.processDueRecurrences(user.get_id());
 
@@ -298,7 +278,8 @@ void LoginWindow::onRegisterClicked()
 
 void LoginWindow::onForgotPasswordClicked()
 {
-    // TODO: open ForgotPasswordWindow
+    // Open ForgotPasswordWindow, close this one
+    ForgotPasswordWindow* fp = new ForgotPasswordWindow(nullptr);
+    fp->show();
+    this->close();
 }
-
-

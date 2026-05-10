@@ -356,7 +356,7 @@ QFrame* BudgetWindow::makeCategoryCard(int index, const QString& emoji, const QS
 
     double remaining = limit - spent;
     QLabel* spentLbl = new QLabel(
-        QString("Rs %1 spent  •  Rs %2 left")
+        QString("Rs %1 spent  •  $%2 left")
             .arg(spent,     0, 'f', 0)
             .arg(qMax(remaining, 0.0), 0, 'f', 0));
     spentLbl->setObjectName("budgetSpentLeft");

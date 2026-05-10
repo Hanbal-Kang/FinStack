@@ -56,3 +56,30 @@ bool GoalService::updateGoalProgress(int goalId, double amount) {
     q.addBindValue(goalId);
     return DatabaseManager::instance().executePrepared(q);
 }
+
+//Adds amount to the goal's saved_amount
+bool GoalService::contributeToGoal(int goalId, double amount)
+{
+    if (amount <= 0) return false;
+
+    //Read current saved_amount
+    QSqlQuery readQ = DatabaseManager::instance().prepare(
+        "SELECT saved_amount FROM savings_goals WHERE savings_goal_id = ?"
+        );
+    readQ.addBindValue(goalId);
+
+    if (!DatabaseManager::instance().executePrepared(readQ) || !readQ.next())
+        return false;
+
+    double current = readQ.value(0).toDouble();
+    double newSaved = current + amount;
+
+    //Write back the new total
+    QSqlQuery writeQ = DatabaseManager::instance().prepare(
+        "UPDATE savings_goals SET saved_amount = ? WHERE savings_goal_id = ?"
+        );
+    writeQ.addBindValue(newSaved);
+    writeQ.addBindValue(goalId);
+
+    return DatabaseManager::instance().executePrepared(writeQ);
+}

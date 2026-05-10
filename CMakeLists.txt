@@ -30,6 +30,7 @@ set(PROJECT_SOURCES
     src/ui/ProfileWindow.cpp
     src/ui/DepositWindow.cpp
     src/ui/WithdrawWindow.cpp
+    src/ui/TransactionHistory.cpp
 
     # Services
 

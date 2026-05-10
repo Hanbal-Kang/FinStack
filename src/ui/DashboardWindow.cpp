@@ -10,6 +10,7 @@
 #include "ui/TransactionHistory.h"
 #include "services/GoalService.h"
 #include "models/SavingsGoal.h"
+#include "ui/RecurringTransactionWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -124,7 +125,7 @@ void DashboardWindow::onWithdrawClicked()
     WithdrawWindow* w = new WithdrawWindow(m_user, this);
 
     // When the user confirms, save the Transaction via the service, then
-    // refresh Dashboard so the new row + updated totals appear immediately.
+    //refresh Dashboard so the new row + updated totals appear immediately.
     connect(w, &TransactionWindow::transaction_confirmed, this,
             [this](const Transaction& t) {
                 TransactionService svc;
@@ -162,6 +163,14 @@ void DashboardWindow::onSavingsGoalsClicked()
 {
     SavingsGoalWindow* goals = new SavingsGoalWindow(m_user, nullptr);
     goals->show();
+    this->close();
+}
+
+//CHANGE : HANBAL
+void DashboardWindow::onRecurringClicked()
+{
+    RecurringTransactionWindow* rec = new RecurringTransactionWindow(m_user, nullptr);
+    rec->show();
     this->close();
 }
 
@@ -326,12 +335,13 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
 
     struct BtnDef { QString icon; QString label; QString color; };
     QList<BtnDef> defs = {
-                          { "↓", "Withdraw",  "#f85149" },
-                          { "↑", "Deposit",   "#3fb950" },
-                          { "◎", "Budget",    "#f0883e" },
-                          { "🎯", "Goals",    "#a78bfa" },
-                          { "∿", "Analytics", "#7c8cf8" },
-                          { "☰", "History",   "#58a6ff" },
+                          { "↓",  "Withdraw",  "#f85149" },
+                          { "↑",  "Deposit",   "#3fb950" },
+                          { "◎",  "Budget",    "#f0883e" },
+                          { "🎯", "Goals",     "#a78bfa" },
+                          { "🔄", "Recurring", "#06b6d4" },
+                          { "∿",  "Analytics", "#7c8cf8" },
+                          { "☰",  "History",   "#58a6ff" },
                           };
 
     for (const auto& d : defs) {
@@ -370,7 +380,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         else if (d.label == "Analytics") connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
         else if (d.label == "History")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
         else if (d.label == "Goals")     connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onSavingsGoalsClicked);
-
+        else if (d.label == "Recurring")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onRecurringClicked);
         row->addWidget(btn, 1);
     }
 

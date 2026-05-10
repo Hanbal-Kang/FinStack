@@ -47,6 +47,7 @@ private slots:
     void onHistoryClicked();
     void onProfileClicked();
     void onSavingsGoalsClicked();
+    void onRecurringClicked();
 
 private:
     void buildNavbar(QWidget* parent);

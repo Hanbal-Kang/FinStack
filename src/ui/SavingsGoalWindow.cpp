@@ -121,6 +121,93 @@ QString AddGoalDialog::getGoalName()  const { return m_nameInput->text().trimmed
 double  AddGoalDialog::getTargetAmt() const { return m_amountInput->text().toDouble(); }
 QDate   AddGoalDialog::getDeadline()  const { return m_dateEdit->date(); }
 
+// =============================================================================
+//  ContributeDialog — popup for adding money to an existing goal
+// =============================================================================
+ContributeDialog::ContributeDialog(double maxAmount, QWidget* parent)
+    : QDialog(parent), m_maxAmount(maxAmount)
+{
+    setWindowTitle("Contribute to Goal");
+    setModal(true);
+    setMinimumWidth(380);
+    setupUI();
+}
+
+void ContributeDialog::setupUI()
+{
+    QVBoxLayout* root = new QVBoxLayout(this);
+    root->setContentsMargins(28, 24, 28, 24);
+    root->setSpacing(16);
+
+    QLabel* title = new QLabel("Add Money to Your Goal");
+    title->setObjectName("cardTitle");
+    root->addWidget(title);
+
+    QLabel* sub = new QLabel(QString("Spendable balance: Rs %1")
+                                 .arg(m_maxAmount, 0, 'f', 0));
+    sub->setObjectName("pageSubtitle");
+    root->addWidget(sub);
+
+    QLabel* amtLbl = new QLabel("Amount (Rs)");
+    amtLbl->setObjectName("inputLabel");
+    m_amountInput = new QLineEdit();
+    m_amountInput->setPlaceholderText("0.00");
+    m_amountInput->setFixedHeight(40);
+    m_amountInput->setObjectName("inputField");
+    root->addWidget(amtLbl);
+    root->addWidget(m_amountInput);
+
+    m_errorLabel = new QLabel();
+    m_errorLabel->setStyleSheet("color: #f85149;");
+    m_errorLabel->hide();
+    root->addWidget(m_errorLabel);
+
+    QHBoxLayout* btnRow = new QHBoxLayout();
+    btnRow->setSpacing(12);
+
+    QPushButton* cancelBtn = new QPushButton("Cancel");
+    cancelBtn->setObjectName("primaryBtn");
+    cancelBtn->setFixedHeight(40);
+    cancelBtn->setCursor(Qt::PointingHandCursor);
+    connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
+
+    QPushButton* okBtn = new QPushButton("Contribute");
+    okBtn->setObjectName("primaryBtn");
+    okBtn->setFixedHeight(40);
+    okBtn->setCursor(Qt::PointingHandCursor);
+    okBtn->setDefault(true);
+    connect(okBtn, &QPushButton::clicked, this, &ContributeDialog::onConfirmClicked);
+
+    btnRow->addStretch();
+    btnRow->addWidget(cancelBtn);
+    btnRow->addWidget(okBtn);
+    root->addLayout(btnRow);
+}
+
+void ContributeDialog::onConfirmClicked()
+{
+    bool ok = false;
+    double amount = m_amountInput->text().toDouble(&ok);
+
+    if (!ok || amount <= 0) {
+        m_errorLabel->setText("Please enter a valid amount greater than 0");
+        m_errorLabel->show();
+        return;
+    }
+
+    if (amount > m_maxAmount) {
+        m_errorLabel->setText("You don't have enough spendable balance");
+        m_errorLabel->show();
+        return;
+    }
+
+    accept();
+}
+
+double ContributeDialog::getAmount() const
+{
+    return m_amountInput->text().toDouble();
+}
 
 // =============================================================================
 //  SavingsGoalWindow — the main page
@@ -373,19 +460,26 @@ QFrame* SavingsGoalWindow::buildGoalCard(const SavingsGoal& goal)
     pctLabel->setObjectName("budgetCatSub");
     cl->addWidget(pctLabel);
 
-    // Action row: delete button on the right
+    //Action row: contribute button (left) + delete button (right)
     QHBoxLayout* actionRow = new QHBoxLayout();
-    actionRow->addStretch();
+    actionRow->setSpacing(8);
+
+    int gid = goal.get_savings_goal_id();   // capture by value — goal is local
+
+    QPushButton* contribBtn = new QPushButton("+ Add Money");
+    contribBtn->setObjectName("primaryBtn");
+    contribBtn->setFixedHeight(32);
+    contribBtn->setCursor(Qt::PointingHandCursor);
+    connect(contribBtn, &QPushButton::clicked, this, [this, gid]() { onContributeClicked(gid); });
 
     QPushButton* delBtn = new QPushButton("Delete");
     delBtn->setObjectName("dangerBtn");
     delBtn->setFixedHeight(32);
     delBtn->setCursor(Qt::PointingHandCursor);
-
-    // Capture id by value — `goal` goes out of scope after this returns
-    int gid = goal.get_savings_goal_id();
     connect(delBtn, &QPushButton::clicked, this, [this, gid]() { onDeleteGoalClicked(gid); });
 
+    actionRow->addWidget(contribBtn);
+    actionRow->addStretch();
     actionRow->addWidget(delBtn);
     cl->addLayout(actionRow);
 
@@ -532,7 +626,23 @@ void SavingsGoalWindow::onDeleteGoalClicked(int goalId)
     loadGoals();
     refreshGoalCards();
 }
+void SavingsGoalWindow::onContributeClicked(int goalId)
+{
+    // m_balance was already computed in loadGoals(). It's the user's spendable
+    // balance: total income − total expenses − total locked in other goals.
+    ContributeDialog dialog(m_balance, this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
 
+    GoalService service;
+    if (!service.contributeToGoal(goalId, dialog.getAmount())) {
+        QMessageBox::warning(this, "Error", "Failed to add money to the goal.");
+        return;
+    }
+
+    loadGoals();
+    refreshGoalCards();
+}
 void SavingsGoalWindow::onBackClicked()
 {
     DashboardWindow* dashboard = new DashboardWindow(m_user, nullptr);

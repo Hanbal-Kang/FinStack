@@ -36,6 +36,23 @@ private slots:
     void onConfirmClicked();
 };
 
+//Dialog for contributing money to an existing goal
+class ContributeDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    explicit ContributeDialog(double maxAmount, QWidget* parent = nullptr);
+    double getAmount() const;
+
+private:
+    double     m_maxAmount;     // user's spendable balance — the cap
+    QLineEdit* m_amountInput = nullptr;
+    QLabel*    m_errorLabel  = nullptr;
+    void setupUI();
+
+private slots:
+    void onConfirmClicked();
+};
 
 class SavingsGoalWindow : public BaseWindow
 {
@@ -83,4 +100,5 @@ private slots:
     void onAddGoalClicked();
     void onDeleteGoalClicked(int goalId);
     void onBackClicked();
+    void onContributeClicked(int goalId);
 };

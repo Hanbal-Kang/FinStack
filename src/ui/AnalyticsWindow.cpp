@@ -273,6 +273,7 @@ void AnalyticsWindow::updateSummaryCards()
 
     int days = startDate.daysTo(today) + 1;   // +1 so today counts
     double avg = (days > 0) ? total / days : 0.0;
+    m_dailyAvgLabel->setText("Rs " + QString::number(avg, 'f', 0));
 }
 
 void AnalyticsWindow::updatePieChart()

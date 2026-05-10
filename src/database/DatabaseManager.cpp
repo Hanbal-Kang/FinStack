@@ -62,14 +62,15 @@ bool DatabaseManager::executePrepared(QSqlQuery& query) {   // ADDED
 // Creates all tables if they don't exist. Safe to call every app start.
 bool DatabaseManager::initSchema()
 {
-    //users table — matches User model + email for AuthService
+    //users table — matches User model + email for AuthService | Change Added recovery code hash
     bool ok = execute(
         "CREATE TABLE IF NOT EXISTS users ("
-        "  id                INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "  username          TEXT NOT NULL UNIQUE,"
-        "  password_hash     TEXT NOT NULL,"
-        "  email             TEXT,"
-        "  acc_creation_date TEXT NOT NULL"
+        "  id                  INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "  username            TEXT NOT NULL UNIQUE,"
+        "  password_hash       TEXT NOT NULL,"
+        "  email               TEXT,"
+        "  acc_creation_date   TEXT NOT NULL,"
+        "  recovery_code_hash  TEXT"
         ")"
         );
 

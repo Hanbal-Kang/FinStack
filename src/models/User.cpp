@@ -45,3 +45,15 @@ bool User::isValid() const
 {
     return ((id > 0) && (!username.isEmpty()));
 }
+
+
+//Added for Recovery code Hash
+QString User::get_recoveryCodeHash() const
+{
+    return this->recoveryCodeHash;
+}
+
+void User::set_recoveryCodeHash(const QString& hash)
+{
+    this->recoveryCodeHash = hash;
+}

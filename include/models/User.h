@@ -8,6 +8,7 @@ private:
     QString username;
     QString passwordHash;
     QDateTime acc_creation_date;
+    QString recoveryCodeHash;
 public:
     User();
 
@@ -16,12 +17,14 @@ public:
     QString get_username() const;
     QString get_passwordHash() const;
     QDateTime get_acc_creation_date() const;
+    QString get_recoveryCodeHash() const;
 
     //Setters
     void set_id(int id);
     void set_username(const QString& username);
     void set_passwordHash(const QString& passwordHash);
     void set_acc_creation_date(const QDateTime& date);
+    void    set_recoveryCodeHash(const QString& hash);
 
     //Checking Edge Cases for our id and name
     bool isValid() const;

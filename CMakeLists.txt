@@ -31,6 +31,7 @@ set(PROJECT_SOURCES
     src/ui/DepositWindow.cpp
     src/ui/WithdrawWindow.cpp
     src/ui/TransactionHistory.cpp
+    src/ui/RecurringTransactionWindow.cpp
 
     # Services
 
@@ -67,6 +68,7 @@ set(PROJECT_SOURCES
     include/ui/BudgetWindow.h
     include/ui/SavingsGoalWindow.h
     include/ui/ProfileWindow.h
+    include/ui/RecurringTransactionWindow.h
 
     include/services/BaseService.h
     include/services/AuthService.h

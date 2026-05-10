@@ -5,6 +5,7 @@
 #include "ui/BudgetWindow.h"
 #include "services/TransactionService.h"
 #include "services/BudgetService.h"
+#include "ui/SavingsGoalWindow.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -149,6 +150,14 @@ void DashboardWindow::onBudgetClicked()
 {
     BudgetWindow* budget = new BudgetWindow(m_user, nullptr);
     budget->show();
+    this->close();
+}
+//CHANGE HANBAL : Added for SavingsGoal
+
+void DashboardWindow::onSavingsGoalsClicked()
+{
+    SavingsGoalWindow* goals = new SavingsGoalWindow(m_user, nullptr);
+    goals->show();
     this->close();
 }
 
@@ -305,6 +314,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
                           { "↓", "Withdraw",  "#f85149" },
                           { "↑", "Deposit",   "#3fb950" },
                           { "◎", "Budget",    "#f0883e" },
+                          { "🎯", "Goals",    "#a78bfa" },
                           { "∿", "Analytics", "#7c8cf8" },
                           { "☰", "History",   "#58a6ff" },
                           };
@@ -344,6 +354,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         else if (d.label == "Budget")    connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onBudgetClicked);
         else if (d.label == "Analytics") connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onAnalyticsClicked);
         else if (d.label == "History")   connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onHistoryClicked);
+        else if (d.label == "Goals")     connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onSavingsGoalsClicked);
 
         row->addWidget(btn, 1);
     }

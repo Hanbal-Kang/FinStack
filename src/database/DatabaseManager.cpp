@@ -40,20 +40,6 @@ bool DatabaseManager::execute(const QString& queryStr) {
         return false;
     }
 
-    //little change for goal window
-    QString createTableQuery =
-        "CREATE TABLE IF NOT EXISTS savings_goals ("
-        "savings_goal_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "user_id INTEGER, "
-        "description TEXT, "
-        "target_amount REAL, "
-        "deadline DATETIME, "
-        "saved_amount REAL DEFAULT 0.0)";
-
-    QSqlQuery q(db);
-    if (!q.exec(createTableQuery)) {
-        qDebug() << "Error creating table:" << q.lastError().text();
-    }
     return true;
 }
 

@@ -20,6 +20,9 @@ public:
     QSqlQuery prepare(const QString& query);
     bool executePrepared(QSqlQuery& query);
 
+    //creates tables if they dont exist
+    bool initSchema();
+
     void close();
 
     DatabaseManager(const DatabaseManager&) = delete;

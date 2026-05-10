@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
     src/ui/BudgetWindow.cpp
     src/ui/SavingsGoalWindow.cpp
     src/ui/ProfileWindow.cpp
+    src/ui/DepositWindow.cpp
+    src/ui/WithdrawWindow.cpp
 
     # Services
 
@@ -90,9 +92,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         include/ui/TransactionHistory.h
-        src/ui/TransactionHistory.cpp
-        include/services/GoalService.h
-        src/services/GoalService.cpp
+        include/ui/DepositWindow.h
+        include/ui/WithdrawWindow.h
     )
 else()
     if(ANDROID)

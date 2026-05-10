@@ -1,4 +1,10 @@
 #include "ui/DashboardWindow.h"
+#include "ui/DepositWindow.h"
+#include "ui/WithdrawWindow.h"
+#include "ui/ProfileWindow.h"
+#include "ui/BudgetWindow.h"
+#include "services/TransactionService.h"
+#include "services/BudgetService.h"
 
 #include <QScreen>
 #include <QScrollArea>
@@ -108,12 +114,53 @@ void DashboardWindow::refreshDashboard()
     }
 }
 
-void DashboardWindow::onWithdrawClicked()  { emit navigateToWithdraw(); }
-void DashboardWindow::onDepositClicked()   { emit navigateToDeposit(); }
-void DashboardWindow::onBudgetClicked()    { emit navigateToBudget(); }
+void DashboardWindow::onWithdrawClicked()
+{
+    WithdrawWindow* w = new WithdrawWindow(m_user, this);
+
+    // When the user confirms, save the Transaction via the service, then
+    // refresh Dashboard so the new row + updated totals appear immediately.
+    connect(w, &TransactionWindow::transaction_confirmed, this,
+            [this](const Transaction& t) {
+                TransactionService svc;
+                if (svc.addTransaction(t))
+                    refreshDashboard();
+            });
+
+    w->show();
+}
+
+void DashboardWindow::onDepositClicked()
+{
+    DepositWindow* w = new DepositWindow(m_user, this);
+
+    connect(w, &TransactionWindow::transaction_confirmed, this,
+            [this](const Transaction& t) {
+                TransactionService svc;
+                if (svc.addTransaction(t))
+                    refreshDashboard();
+            });
+
+    w->show();
+}
+
+//Change: Added the connection from dashboard to Budget window
+void DashboardWindow::onBudgetClicked()
+{
+    BudgetWindow* budget = new BudgetWindow(m_user, nullptr);
+    budget->show();
+    this->close();
+}
+
 void DashboardWindow::onAnalyticsClicked() { emit navigateToAnalytics(); }
 void DashboardWindow::onHistoryClicked()   { emit navigateToHistory(); }
-void DashboardWindow::onProfileClicked()   { emit navigateToProfile(); }
+void DashboardWindow::onProfileClicked()
+{
+
+    ProfileWindow* profile = new ProfileWindow(m_user, nullptr);
+    profile->show();
+    this->close();
+}
 
 void DashboardWindow::buildNavbar(QWidget* parent)
 {
@@ -159,12 +206,15 @@ void DashboardWindow::buildNavbar(QWidget* parent)
     QString initials = m_user.get_username().isEmpty()
                            ? "?"
                            : m_user.get_username().left(2).toUpper();
-    m_avatarLabel = new QLabel(initials, parent);
-    m_avatarLabel->setObjectName("avatarLabel");
-    m_avatarLabel->setFixedSize(36, 36);
-    m_avatarLabel->setAlignment(Qt::AlignCenter);
-    m_avatarLabel->setCursor(Qt::PointingHandCursor);
-    layout->addWidget(m_avatarLabel);
+    //changes: making the profile icon a button to go to profile window
+    QPushButton* avatarBtn = new QPushButton(initials, parent);
+    avatarBtn->setObjectName("avatarLabel");
+    avatarBtn->setFixedSize(36, 36);
+    avatarBtn->setCursor(Qt::PointingHandCursor);
+    avatarBtn->setFlat(true);
+    layout->addWidget(avatarBtn);
+
+    connect(avatarBtn, &QPushButton::clicked, this, &DashboardWindow::onProfileClicked);
 
     connect(backBtn, &QPushButton::clicked, this, &DashboardWindow::logoutRequested);
 }
@@ -286,7 +336,7 @@ void DashboardWindow::buildQuickActions(QVBoxLayout* layout)
         QPushButton* clickArea = new QPushButton(btn);
         clickArea->setFlat(true);
         clickArea->setStyleSheet("background:transparent;border:none;");
-        clickArea->setGeometry(0, 0, 1, 1);
+        clickArea->setGeometry(0, 0, 300, 100);
         clickArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         if      (d.label == "Withdraw")  connect(clickArea, &QPushButton::clicked, this, &DashboardWindow::onWithdrawClicked);
@@ -476,31 +526,17 @@ QWidget* DashboardWindow::makeBudgetBar(const QString& category, double spent, d
 // =============================================================================
 void DashboardWindow::loadData()
 {
-    if (m_transactions.isEmpty()) {
-        Transaction t1;
-        t1.set_type(Transaction::Income);  t1.set_amount(5000.00);
-        t1.set_category("Other");          t1.set_description("Monthly Stipend");
-        t1.set_transac_date(QDateTime::currentDateTime().addDays(-1));
-        m_transactions.append(t1);
+    //CHANGE : HANBAL
+    // Pull this user's transactions and budgets from the DB via the service layer.
+    // The services return std::vector — QList's range constructor wraps the
+    // begin/end iterators, so we get a clean QList<T> without copying twice.
+    TransactionService txSvc;
+    std::vector<Transaction> txs = txSvc.getAllByUser(m_user.get_id());
+    m_transactions = QList<Transaction>(txs.begin(), txs.end());
 
-        Transaction t2;
-        t2.set_type(Transaction::Expense); t2.set_amount(450.00);
-        t2.set_category("Food");           t2.set_description("Grocery Shopping");
-        t2.set_transac_date(QDateTime::currentDateTime().addDays(-2));
-        m_transactions.append(t2);
-
-        Transaction t3;
-        t3.set_type(Transaction::Expense); t3.set_amount(120.00);
-        t3.set_category("Transport");      t3.set_description("Uber Ride");
-        t3.set_transac_date(QDateTime::currentDateTime().addDays(-3));
-        m_transactions.append(t3);
-    }
-
-    // Uncomment when we implement the service layer:
-    // TransactionService txSvc; txSvc.initialize();
-    // m_transactions = txSvc.getTransactions(m_user.get_id());
-    // BudgetService budSvc; budSvc.initialize();
-    // m_budgets = budSvc.getBudgets(m_user.get_id());
+    BudgetService budSvc;
+    std::vector<Budget> bgs = budSvc.getUserBudgets(m_user.get_id());
+    m_budgets = QList<Budget>(bgs.begin(), bgs.end());
 }
 
 double DashboardWindow::totalBalance() const

@@ -1,4 +1,7 @@
 #include "ui/LoginWindow.h"
+#include "ui/RegisterWindow.h"
+#include "services/AuthService.h"
+#include "utils/Validator.h"
 #include <QApplication>
 #include <QScreen>
 #include <QSizePolicy>
@@ -232,27 +235,40 @@ void LoginWindow::onLoginClicked()
     QString username = m_usernameInput->text().trimmed();
     QString password = m_passwordInput->text();
 
-    if (username.isEmpty() || password.isEmpty())
-    {
+    //1. Empty-field check
+    if (username.isEmpty() || password.isEmpty()) {
         m_errorLabel->setText("Please fill in all fields");
+        m_errorLabel->show();
+        return;
+    }
+
+    //2. Verify credentials AND fetch the full User in one shot.
+    // We use the 3-arg overload of login() — it fills `user` if password matches.
+    AuthService auth;
+    User user;
+    if (!auth.login(username, password, user)) {
+        // Either username doesn't exist OR password is wrong. We don't tell the
+        // user which one (Because its a better security practice to not tell)
+        m_errorLabel->setText("Invalid username or password");
         m_errorLabel->show();
         return;
     }
 
     m_errorLabel->hide();
 
-    // Tester Just to test the functionality of Dashboard (Hardcoded)
-    User testUser;
-    testUser.set_username(username);
-
-    DashboardWindow* dashboard = new DashboardWindow(testUser, nullptr);
+    //3. Hand the real User off to Dashboard.
+    DashboardWindow* dashboard = new DashboardWindow(user, nullptr);
     dashboard->show();
     this->close();
 }
 
 void LoginWindow::onRegisterClicked()
 {
-    // TODO: open RegisterWindow
+    // Open RegisterWindow, close this one. No nested connect — that was a bug
+    // that made every click stack another connection on the same button.
+    RegisterWindow* reg = new RegisterWindow(nullptr);
+    reg->show();
+    this->close();
 }
 
 void LoginWindow::onForgotPasswordClicked()

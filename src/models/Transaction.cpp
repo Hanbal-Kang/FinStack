@@ -8,7 +8,7 @@ Transaction::Transaction()
     transaction_id = 0;
 
     //No user will have user_id = 0
-    user_id = 0;
+    account_id = 0;
 
     amount = 0.0;
 
@@ -32,9 +32,9 @@ int Transaction::get_transaction_id() const
     return this->transaction_id;
 }
 
-int Transaction::get_user_id() const
+int Transaction::get_account_id() const
 {
-    return this->user_id;
+    return this->account_id;
 }
 
 double Transaction::get_amount() const
@@ -68,9 +68,9 @@ void Transaction::set_transaction_id(int id)
     this->transaction_id = id;
 }
 
-void Transaction::set_user_id(int id)
+void Transaction::set_account_id(int id)
 {
-    this->user_id = id;
+    this->account_id = id;
 }
 
 void Transaction::set_amount(double amount)

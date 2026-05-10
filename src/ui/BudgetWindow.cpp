@@ -1,4 +1,7 @@
 #include "ui/BudgetWindow.h"
+#include "ui/DashboardWindow.h"
+#include "services/BudgetService.h"
+#include "services/TransactionService.h"
 #include <QScrollArea>
 #include <QSizePolicy>
 #include <QDate>
@@ -87,8 +90,14 @@ void BudgetWindow::refreshBudgets()
         m_gridLayout->addWidget(card, i / 2, i % 2);
     }
 }
-
-void BudgetWindow::onBackClicked() { emit navigateBack(); }
+//CHANGE : HANBAL
+void BudgetWindow::onBackClicked()
+{
+    // Reopen Dashboard with the same User, then close this window.
+    DashboardWindow* dashboard = new DashboardWindow(m_user, nullptr);
+    dashboard->show();
+    this->close();
+}
 
 void BudgetWindow::onEditClicked(int index)
 {
@@ -120,29 +129,39 @@ void BudgetWindow::onSaveClicked(int index)
         return;
     }
 
-    // Update the in-memory budget (service call goes here when ready)
+    // Persist the edit. If a budget exists for this category → UPDATE; else → INSERT.
+    BudgetService svc;
     const QString& cat = m_categories[index].name;
     bool found = false;
+    bool saveOk = false;
+
     for (auto& b : m_budgets) {
         if (Budget::categoryToString(b.get_category()) == cat) {
-            b.set_monthly_limit(newLimit);
+            saveOk = svc.updateBudget(b.get_id(), newLimit);
+            if (saveOk) b.set_monthly_limit(newLimit);   // sync in-memory copy
             found = true;
             break;
         }
     }
+
     if (!found) {
         Budget newBudget;
         newBudget.set_user_id(m_user.get_id());
         newBudget.set_category(Budget::categoryFromString(cat));
         newBudget.set_monthly_limit(newLimit);
-        m_budgets.append(newBudget);
+        saveOk = svc.createBudget(newBudget);
+        if (saveOk) {
+            // Refresh from DB so the new budget gets its real auto-generated id
+            // (we'll need that id for future updates of the same row)
+            loadData();
+        }
     }
 
-    // Uncomment when BudgetService is ready:
-    // BudgetService svc; svc.initialize();
-    // Budget b; b.set_user_id(m_user.get_id());
-    // b.set_category(cat); b.set_monthly_limit(newLimit);
-    // svc.setBudget(b);
+    if (!saveOk) {
+        // DB write failed — flag the input red, don't update the UI
+        m_editInputs[index]->setStyleSheet("border-color: #f85149;");
+        return;
+    }
 
     // Restore UI state and refresh
     m_editInputs [index]->setVisible(false);
@@ -415,46 +434,17 @@ QFrame* BudgetWindow::makeCategoryCard(int index, const QString& emoji, const QS
 // =============================================================================
 void BudgetWindow::loadData()
 {
-    if (m_budgets.isEmpty()) {
-        struct Seed { QString cat; double limit; };
-        QList<Seed> seeds = {
-                             { "Food",          1000.0 },
-                             { "Transport",      300.0 },
-                             { "Rent",          2500.0 },
-                             { "Tuition",       3500.0 },
-                             { "Entertainment",  200.0 },
-                             { "Other",          500.0 },
-                             };
-        for (const auto& s : seeds) {
-            Budget b;
-            b.set_user_id(m_user.get_id());
-            b.set_category(Budget::categoryFromString(s.cat));
-            b.set_monthly_limit(s.limit);
-            m_budgets.append(b);
-        }
-    }
+    // Pull the user's budgets from the DB (empty list if none yet — fine)
+    BudgetService budSvc;
+    std::vector<Budget> bgs = budSvc.getUserBudgets(m_user.get_id());
+    m_budgets = QList<Budget>(bgs.begin(), bgs.end());
 
-    if (m_transactions.isEmpty()) {
-        struct TxSeed { QString cat; double amount; };
-        QList<TxSeed> txSeeds = {
-                                 { "Food",           850.0 },
-                                 { "Transport",      180.0 },
-                                 { "Rent",          2500.0 },
-                                 { "Tuition",       3500.0 },
-                                 { "Entertainment",  195.0 },
-                                 { "Other",          120.0 },
-                                 };
-        for (const auto& s : txSeeds) {
-            Transaction t;
-            t.set_type(Transaction::Expense);
-            t.set_user_id(m_user.get_id());
-            t.set_category(s.cat);
-            t.set_amount(s.amount);
-            t.set_transac_date(QDateTime::currentDateTime());
-            m_transactions.append(t);
-        }
-    }
+    // Pull all transactions so we can compute spent-per-category for this month
+    TransactionService txSvc;
+    std::vector<Transaction> txs = txSvc.getAllByUser(m_user.get_id());
+    m_transactions = QList<Transaction>(txs.begin(), txs.end());
 
+    // Recompute per-category spending: sum of expenses in current month
     m_spent.clear();
     int currentMonth = QDate::currentDate().month();
     int currentYear  = QDate::currentDate().year();
@@ -466,12 +456,6 @@ void BudgetWindow::loadData()
             m_spent[tx.get_category()] += tx.get_amount();
         }
     }
-
-    // ── Uncomment when services are implemented ───────────────────────────────
-    // BudgetService budSvc; budSvc.initialize();
-    // m_budgets = budSvc.getBudgets(m_user.get_id());
-    // TransactionService txSvc; txSvc.initialize();
-    // m_transactions = txSvc.getTransactions(m_user.get_id());
 }
 
 double BudgetWindow::totalBudget() const

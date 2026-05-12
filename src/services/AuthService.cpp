@@ -35,7 +35,7 @@ bool AuthService::registerUser(const QString& username,
     // 2. Grab the new user's id (auto-incremented by SQLite).
     int newUserId = q.lastInsertId().toInt();
     if (newUserId <= 0)
-        return false;   // shouldn't happen, but guard anyway
+        return false;   // shouldn't happen
 
     // 3. Create a default "Main" account for the user.
     //  Without this, transactions can never be saved (they reference account_id).

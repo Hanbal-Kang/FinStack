@@ -13,14 +13,12 @@ public:
     bool login(const QString& username, const QString& password);
     bool login(const QString& username, const QString& password, User& outUser);
 
-    // Verifies oldPassword for `username`, then sets the password to newPassword.
-    // Returns false if the user doesn't exist OR if oldPassword is wrong.
+    //Verifies oldPassword for `username`, then sets the password to newPassword.
+    //Returns false if the user doesn't exist OR if oldPassword is wrong.
     bool changePassword(const QString& username, const QString& oldPassword, const QString& newPassword);
 
-    // Resets a forgotten password using the recovery code. Returns false if
-    // username is unknown OR the code doesn't match. On success, also rotates
-    // the recovery code (caller gets the new one back via outNewCode) so a
-    // leaked code can't be reused.
+    //Resets a forgotten password using the recovery code. Returns false if
+    //username is unknown OR the code doesnt match
     bool resetPasswordWithRecoveryCode(const QString& username,
                                        const QString& recoveryCode,
                                        const QString& newPassword,

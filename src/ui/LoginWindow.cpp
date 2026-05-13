@@ -183,9 +183,28 @@ void LoginWindow::setupRightPanel()
     m_passwordInput->setFixedHeight(46);
     m_passwordInput->setObjectName("inputField");
 
+    //Bug Fix: Adding another Horizontal Box to put Our input field and Show pass Button
+    QHBoxLayout* pwRow = new QHBoxLayout();
+    pwRow->setSpacing(0);
+
+    QPushButton* eyeBtn = new QPushButton("👁");
+    eyeBtn->setObjectName("eyeBtn");
+    eyeBtn->setFixedSize(46, 46);
+    eyeBtn->setCursor(Qt::PointingHandCursor);
+    eyeBtn->setCheckable(true);
+
+    //Connection
+    connect(eyeBtn, &QPushButton::toggled, this, [this](bool checked)
+        {
+            m_passwordInput->setEchoMode(checked ? QLineEdit::Normal : QLineEdit::Password);
+        });
+
+    pwRow->addWidget(m_passwordInput);
+    pwRow->addWidget(eyeBtn);
+
     layout->addLayout(passLabelRow);
     layout->addSpacing(6);
-    layout->addWidget(m_passwordInput);
+    layout->addLayout(pwRow);
     layout->addSpacing(28);
 
     m_errorLabel = new QLabel("");

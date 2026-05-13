@@ -62,9 +62,13 @@ private:
     QWidget* makeBudgetBar(const QString& category, double spent, double limit);
 
     void   loadData();
-    double totalBalance()    const;
-    double monthlyIncome()   const;
+    double totalBalance() const;
+    double monthlyIncome()  const;
     double monthlyExpenses() const;
+
+    //Added so We can have a comparison between previous month and this month
+    double previousMonthNet() const;
+    double currentMonthNet() const;
 
     User               m_user;
     QList<Transaction> m_transactions;

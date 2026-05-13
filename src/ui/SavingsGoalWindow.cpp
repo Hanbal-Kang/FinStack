@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QDialogButtonBox>
 #include <QFormLayout>
+#include <algorithm>
 
 // =============================================================================
 //  AddGoalDialog — the modal popup for creating a new goal
@@ -438,13 +439,16 @@ QFrame* SavingsGoalWindow::buildGoalCard(const SavingsGoal& goal)
     QLabel* remLbl = new QLabel("Rs " + QString::number(qAbs(remaining), 'f', 0));
     remLbl->setStyleSheet("color: #E6EDF3; font-weight: bold; font-size: 18px;");
 
-    QLabel* remTitle = new QLabel(remaining <= 0 ? "Surplus" : "Still Needed");
-    remTitle->setObjectName("budgetCatSub");
-
     amtRow->addWidget(curLbl);
     amtRow->addStretch();
-    amtRow->addWidget(remTitle);
-    amtRow->addWidget(remLbl);
+
+    if (remaining > 0)
+    {
+        QLabel* remTitle = new QLabel("Still Needed");
+        remTitle->setObjectName("budgetCatSub");
+        amtRow->addWidget(remTitle);
+        amtRow->addWidget(remLbl);
+    }
     cl->addLayout(amtRow);
 
     // Progress bar
@@ -470,6 +474,12 @@ QFrame* SavingsGoalWindow::buildGoalCard(const SavingsGoal& goal)
     contribBtn->setObjectName("primaryBtn");
     contribBtn->setFixedHeight(32);
     contribBtn->setCursor(Qt::PointingHandCursor);
+
+    //Hide the button if goal is fully funded
+    if (goal.get_saved_amount() >= goal.get_target_amount())
+    {
+        contribBtn->hide();
+    }
     connect(contribBtn, &QPushButton::clicked, this, [this, gid]() { onContributeClicked(gid); });
 
     QPushButton* delBtn = new QPushButton("Delete");
@@ -634,14 +644,31 @@ void SavingsGoalWindow::onDeleteGoalClicked(int goalId)
 }
 void SavingsGoalWindow::onContributeClicked(int goalId)
 {
-    // m_balance was already computed in loadGoals(). It's the user's spendable
-    // balance: total income − total expenses − total locked in other goals.
-    ContributeDialog dialog(m_balance, this);
+    //First Finding the goal so we know its remaining capacity
+    double remaining = 0.0;
+    for (const auto& g : m_goals)
+    {
+        if (g.get_savings_goal_id() == goalId)
+        {
+            remaining = g.get_target_amount() - g.get_saved_amount();
+            break;
+        }
+    }
+    if (remaining <= 0)
+    {
+        QMessageBox::information(this, "Goal Achieved","This goal is already fully funded.");
+        return;
+    }
+
+    double maxContribution = std::min(m_balance, remaining);
+
+    ContributeDialog dialog(maxContribution, this);
     if (dialog.exec() != QDialog::Accepted)
         return;
 
     GoalService service;
-    if (!service.contributeToGoal(goalId, dialog.getAmount())) {
+    if (!service.contributeToGoal(goalId, dialog.getAmount()))
+    {
         QMessageBox::warning(this, "Error", "Failed to add money to the goal.");
         return;
     }

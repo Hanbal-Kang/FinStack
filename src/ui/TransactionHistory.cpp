@@ -150,7 +150,8 @@ void TransactionHistoryWindow::buildFilterBar(QVBoxLayout* root)
     connect(m_catFilter, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &TransactionHistoryWindow::onCatFilterChanged);
 
-    m_clearBtn = new QPushButton("Clear");
+    //Changed Name to clear Ambiguity in its functionality
+    m_clearBtn = new QPushButton("Reset Filters");
     m_clearBtn->setObjectName("primaryBtn");
     m_clearBtn->setCursor(Qt::PointingHandCursor);
     m_clearBtn->setFixedHeight(38);
@@ -287,9 +288,26 @@ QWidget* TransactionHistoryWindow::makeRow(const Transaction& tx)
     QLabel* amt = new QLabel(sign + " Rs " + QString::number(tx.get_amount(), 'f', 2));
     amt->setObjectName(isIncome ? "txAmountIncome" : "txAmountExpense");
 
-    QPushButton* delBtn = new QPushButton("🗑");
-    delBtn->setObjectName("navIconBtn");
-    delBtn->setFixedSize(30, 30);
+    QPushButton* delBtn = new QPushButton("✕");
+    delBtn->setFixedSize(32, 32);
+    delBtn->setCursor(Qt::PointingHandCursor);
+    delBtn->setStyleSheet
+        (
+        "QPushButton "
+        "{"
+        "  background-color:rgba(248,81,73,0.15);"
+        "  color: #f85149;"
+        "  border: 1px solid rgba(248,81,73,0.4);"
+        "  border-radius: 8px;"
+        "  font-size: 14px;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton:hover "
+        "{"
+        "  background-color: rgba(248,81,73,0.3);"
+        "  border-color: #f85149;"
+        "}"
+        );
     // Capture id by value — `tx` goes out of scope after this returns
     int txId = tx.get_transaction_id();
     connect(delBtn, &QPushButton::clicked, this, [this, txId](){ onDeleteClicked(txId); });
@@ -324,13 +342,16 @@ void TransactionHistoryWindow::updateSummaryBar()
 
     m_incomeLabel ->setText("Rs " + QString::number(income,  'f', 2));
     m_expenseLabel->setText("Rs " + QString::number(expense, 'f', 2));
-    m_netLabel    ->setText((net >= 0 ? "+" : "-") + QString(" Rs ")
-                            + QString::number(std::abs(net), 'f', 2));
-    m_countLabel  ->setText(QString::number(m_filtered.size()));
+    bool isZero = qFuzzyIsNull(net);
 
-    QString netColor = (net >= 0) ? "#10b981" : "#f85149";
-    m_netLabel->setStyleSheet(QString("color: %1; font-size: 18px; font-weight: 700;")
-                                  .arg(netColor));
+    //CHANGE (Bug Fix): When Net amount 0.00 Color will be grey and no Plus Sign
+    QString sign = isZero ? "" : (net > 0 ? "+" : "-");
+    m_netLabel->setText(sign + QString(" Rs ")+ QString::number(std::abs(net), 'f', 2));
+    m_countLabel->setText(QString::number(m_filtered.size()));
+
+    //on 0.00 color Grey otherwise green or red
+    QString netColor = isZero ? "#8b949e" : (net > 0 ? "#10b981" : "#f85149");
+    m_netLabel->setStyleSheet(QString("color: %1; font-size: 18px; font-weight: 700;").arg(netColor));
 }
 
 

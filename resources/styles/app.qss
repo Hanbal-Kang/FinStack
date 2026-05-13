@@ -653,3 +653,22 @@ QPushButton#txConfirmBtn:hover {
     font-weight: 600;
 }
 #dangerBtn:hover { background-color: rgba(248, 81, 73, 0.25); }
+
+/*---Styling Show Pass Icon--- */
+#eyeBtn
+{
+    background-color: transparent;
+    border: 1px solid #21262d;
+    border-left: none;
+    border-radius: 0;
+    color: #8b949e;
+    font-size: 16px;
+}
+#eyeBtn:hover
+{
+    color: #ffffff;
+}
+#eyeBtn:checked
+{
+    color: #58a6ff;
+}

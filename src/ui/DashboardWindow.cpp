@@ -264,10 +264,40 @@ void DashboardWindow::buildHeroCard(QVBoxLayout* layout)
     m_balanceLabel->setObjectName("heroAmount");
     m_balanceLabel->setAlignment(Qt::AlignCenter);
 
-    QLabel* trend = new QLabel("↑ +1.3%  vs last month", hero);
+
+    //Bug Fix : (Changing the hard coded values with actual Comparison)
+
+    double curr = currentMonthNet();
+    double prev = previousMonthNet();
+
+    QString trendText;
+
+    if (qFuzzyIsNull(prev))
+    {
+        //Last month had zero, so we cant divide by zero and just print
+        trendText = "—  no prior month data";
+    }
+    else
+    {
+        double pct = ((curr - prev)/ qAbs(prev)) * 100.0;
+        QString arrow = (pct >= 0)? "↑" : "↓";
+        QString sign = (pct >= 0)? "+" : "";
+        trendText = QString("%1 %2%3%  vs last month").arg(arrow).arg(sign).arg(pct, 0, 'f', 1); // just till 1 decimal place
+    }
+
+    QLabel* trend = new QLabel(trendText, hero);
     trend->setObjectName("heroTrend");
     trend->setAlignment(Qt::AlignCenter);
     trend->setFixedHeight(24);
+
+    bool noData = qFuzzyIsNull(prev);
+    double pct = noData ? 0.0 : ((curr - prev) / qAbs(prev)) * 100.0;
+    bool up = !noData && pct >= 0;
+
+    QString bg = noData ? "rgba(139,148,158,0.15)" :(up ? "rgba(63,185,80,0.15)" :"rgba(248,81,73,0.15)");
+    QString color = noData? "#8b949e": (up ? "#3fb950": "#f85149");
+
+    trend->setStyleSheet(QString("background-color: %1; color: %2; border-radius: 12px; padding: 4px 12px; font-weight: 600;").arg(bg, color));
 
     QHBoxLayout* cardsRow = new QHBoxLayout();
     cardsRow->setContentsMargins(24, 8, 24, 0);
@@ -608,4 +638,35 @@ double DashboardWindow::monthlyExpenses() const
             tx.get_transac_date().date().year()  == y)
             total += tx.get_amount();
     return total;
+}
+
+
+//Added to Track comparison in Previous Month and this month
+
+//(income − expenses)
+double DashboardWindow::currentMonthNet() const
+{
+    return monthlyIncome() - monthlyExpenses();
+}
+
+double DashboardWindow::previousMonthNet() const
+{
+    QDate prev = QDate::currentDate().addMonths(-1);
+    int targetMonth = prev.month();
+    int targetYear  = prev.year();
+
+    double income = 0.0, expense = 0.0;
+    for (const auto& tx : m_transactions)
+    {
+        QDate d = tx.get_transac_date().date();
+
+        if (d.month() != targetMonth || d.year() != targetYear)
+            continue;
+
+        if (tx.get_type() == Transaction::Income)
+            income  += tx.get_amount();
+        else
+            expense += tx.get_amount();
+    }
+    return (income - expense);
 }

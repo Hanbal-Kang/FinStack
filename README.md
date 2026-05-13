@@ -1,6 +1,6 @@
 # FinStack
 
-A desktop personal finance app for university students. Built in C++ with Qt 6.
+A desktop personal Finance Manager for university students. Built in C++ with Qt 6.
 
 Most finance apps are built for adults with salaries. They assume you have a steady income, recurring bills, investments, retirement goals. They are not built for someone living on a monthly stipend trying to figure out why their money runs out by the 20th.
 
@@ -93,7 +93,7 @@ Built as an OOP semester project by:
 - **Hanbal Aziz Kang** 
 - **Ahmad Nasir** 
 - **Abdullah Hussain** 
-- **Maryam**
+- **Maryam Waseem**
 
 ## License
 
